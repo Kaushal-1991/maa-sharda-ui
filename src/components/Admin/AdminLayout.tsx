@@ -21,8 +21,6 @@ const AdminLayout = () => {
           <span><b>Maa Sharda</b><small>ADMIN PANEL</small></span>
         </Link>
 
-        
-
         <nav className="admin-nav" aria-label="Admin navigation">
           <Text className="admin-nav__heading">MAIN NAVIGATION</Text>
           {navigation.map((item) => (

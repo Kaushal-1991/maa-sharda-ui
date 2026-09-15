@@ -821,6 +821,55 @@
   background: #7f1235;
 }
 
+.header-menu-toggle {
+  color: #9f1239;
+  border: 1px solid #ead8cd;
+  border-radius: 9px;
+  background: #fffaf7;
+}
+
+.mobile-nav-drawer {
+  top: 64px;
+}
+
+.mobile-nav-drawer__body {
+  padding: 0;
+}
+
+.mobile-nav {
+  padding: 12px max(16px, env(safe-area-inset-right)) 20px max(16px, env(safe-area-inset-left));
+  border-top: 1px solid #f1e2da;
+  background: linear-gradient(135deg, #fffdfb, #fff4ed);
+  box-shadow: 0 12px 24px rgba(91, 43, 36, 0.12);
+}
+
+.mobile-nav__link {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: #765f59;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mobile-nav__link:hover,
+.mobile-nav__link:focus-visible {
+  color: #9f1239;
+  background: #fff;
+}
+
+.mobile-nav__cta {
+  margin-top: 16px;
+  color: #fff;
+  background: #9f1239;
+  box-shadow: 0 8px 16px rgba(159, 18, 57, 0.2);
+}
+
+.mobile-nav__cta:hover {
+  background: #7f1235;
+}
+
 .login-main {
   min-height: calc(100vh - 145px);
   padding: 82px 0;
