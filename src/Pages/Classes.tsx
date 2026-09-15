@@ -22,7 +22,7 @@ const galleryItems = [
   { image: classFourImage, label: 'class image' },
 ];
 
-const demoYoutubeVideoId = 'kJQP7kiw5Fk';
+const demoYoutubeVideoId = 'sFOzSmy94oo';
 const tusharYoutubeSearchUrl = 'https://www.youtube.com/results?search_query=tushar+singh+thakur';
 const youtubeApiKey = process.env.REACT_APP_YOUTUBE_API_KEY;
 const youtubeUploadsPlaylistId = process.env.REACT_APP_YOUTUBE_UPLOADS_PLAYLIST_ID;
@@ -92,7 +92,7 @@ const Classes = () => {
                 Maa Sharda Sangeet Academy in Kolpanday, Azamgarh, Uttar Pradesh is a welcoming
                 space to learn music, practise with purpose and grow with confidence.
               </Text>
-              <Group mt="xl" gap="sm">
+              <Group mt="xl" gap="sm" className="page-hero-actions">
                 <Button component={Link} to="/register" className="hero-button" radius="md">
                   Join a class <span aria-hidden="true">→</span>
                 </Button>

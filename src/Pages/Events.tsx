@@ -37,9 +37,9 @@ const performanceGallery = [
 ];
 
 const youtubeVideos = [
-  { id: 'kJQP7kiw5Fk', title: 'Swarum Band performance' },
-  { id: 'OPf0YbXqDm0', title: 'Live music session' },
-  { id: 'OPf0YbXqDm0', title: 'Music and performance inspiration' },
+  { id: 'ir2IM_MkmJo', title: 'Swarum Band performance' },
+  { id: 'hCPNbs_v9Qw', title: 'Live music session' },
+  { id: 'JaALzoCWXEE', title: 'Music and performance inspiration' },
 ];
 
 const swarumYoutubeUrl = 'https://www.youtube.com/results?search_query=swarum+band';
@@ -58,7 +58,7 @@ const Events = () => {
                 Swarum Band brings singers and musicians together to create warm, expressive live
                 performances rooted in connection, rhythm and feeling.
               </Text>
-              <Group mt="xl" gap="sm">
+              <Group mt="xl" gap="sm" className="page-hero-actions">
                 <Button component={Link} to="/register" className="hero-button" radius="md">
                   Join the music community <span aria-hidden="true">→</span>
                 </Button>
@@ -92,7 +92,7 @@ const Events = () => {
                 music performances. Their work is about more than playing songs: it is about creating
                 a shared atmosphere where every voice and instrument has a place.
               </Text>
-              <Group mt="xl" gap="sm">
+              <Group mt="xl" gap="sm" className="swarum-tags">
                 <span className="profile-tag">LIVE MUSIC</span>
                 <span className="profile-tag">SUFI & FOLK</span>
                 <span className="profile-tag">BOLLYWOOD</span>

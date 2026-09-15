@@ -17,7 +17,7 @@ import Header from '../components/Header/Header';
 
 const instruments = [
   {
-    icon: 'Sitar',
+    icon: '🪕',
     title: 'Classical Music',
     copy: 'Build a strong foundation in melody, rhythm and expression.',
     image: 'https://loremflickr.com/900/700/sitar,indian,classical-music',
