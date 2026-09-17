@@ -38,6 +38,7 @@ const Register = () => {
        setLoading(true);
        registerStudent(values).then(() => {
            successNotification("Student registered successfully !!!");
+           form.reset();
        }).catch((error: unknown) => {
            const apiMessage =
               (error as { response?: { data?: { errorMessage?: string; message?: string } } })
