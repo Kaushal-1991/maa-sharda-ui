@@ -7,15 +7,15 @@ import Home from '../Pages/Home';
 import Login from '../Pages/Login';
 import AdminDashboard from '../Pages/AdminDashboard';
 import AdminSection from '../Pages/AdminSection';
-import Register from '../Pages/Register';
 import AdminLayout from '../components/Admin/AdminLayout';
+import RegisterPage from '../Pages/RegisterPage';
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Navigate to="/dashboard" replace />} />
         <Route path="/about" element={<About />} />

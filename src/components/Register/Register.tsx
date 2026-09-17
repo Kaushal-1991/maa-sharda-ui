@@ -1,7 +1,7 @@
 import { useForm } from '@mantine/form';
-import Footer from '../components/Footer/Footer';
-import Header from '../components/Header/Header';
-import maaShardaLogo from '../images/maa-sharda.jpeg';
+import Footer from '../Footer/Footer';
+import Header from '../Header/Header';
+import maaShardaLogo from '../../images/maa-sharda.jpeg';
 import {
    Button,
    Container,
@@ -13,8 +13,12 @@ import {
    TextInput,
    Title,
 } from '@mantine/core';
+import { registerStudent } from '../../Service/StudentService';
+import { errorNotification, successNotification } from '../../Utility/NotificationUtil';
+import { useState } from 'react';
 
 const Register = () => {
+   const [loading, setLoading] = useState(false);
    const form = useForm({
       initialValues: {
          name: '',
@@ -24,13 +28,26 @@ const Register = () => {
          address: '',
       },
       validate: {
-        name: (value) => (value.trim().length < 2 ? 'Enter your name' : null),
-        email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Enter a valid email address'),
-        phone: (value) => (value.trim().length < 10 ? 'Enter a valid phone number' : null),
-        musicOption: (value) => (value ? null : 'Select a music option'),  
-    },
+         name: (value) => (value.trim().length < 2 ? 'Enter your name' : null),
+         email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Enter a valid email address'),
+         phone: (value) => (/^\d{10}$/.test(value) ? null : 'Enter a valid 10-digit phone number'),
+         musicOption: (value) => (value ? null : 'Select a music option'),
+      },
    });
-
+   const handleSubmit = (values: typeof form.values) => {
+       setLoading(true);
+       registerStudent(values).then(() => {
+           successNotification("Student registered successfully !!!");
+       }).catch((error: unknown) => {
+           const apiMessage =
+              (error as { response?: { data?: { errorMessage?: string; message?: string } } })
+                 ?.response?.data?.errorMessage ||
+              (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+           errorNotification(apiMessage || "Failed to register student.");
+       }).finally(()=>{
+         setLoading(false);
+       });
+   }
    return (
       <div>
          <Header />
@@ -68,7 +85,7 @@ const Register = () => {
                         </Text>
                      </div>
 
-                     <form onSubmit={form.onSubmit(() => undefined)}>
+                     <form onSubmit={form.onSubmit(handleSubmit)}>
                         <Stack gap="md">
                            <TextInput
                               label="Your name"
@@ -83,30 +100,39 @@ const Register = () => {
                            />
                            <TextInput
                               label="Phone number"
-                              placeholder="123-456-7890"
+                              placeholder="1234567890"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              maxLength={10}
                               {...form.getInputProps('phone')}
+                              onChange={(event) =>
+                                 form.setFieldValue(
+                                    'phone',
+                                    event.currentTarget.value.replace(/\D/g, '').slice(0, 10)
+                                 )
+                              }
                            />
                            <Select
                               label="Music option"
                               placeholder="Select your music option"
                               data={[
-                                 { value: 'classical-music', label: 'Classical Music' },
-                                 { value: 'light-music', label: 'Light Music' },
-                                 { value: 'harmonium', label: 'Harmonium' },
-                                 { value: 'guitar', label: 'Guitar' },
+                                 { value: 'CLASSICAL_MUSIC', label: 'Classical Music' },
+                                 { value: 'LIGHT_MUSIC', label: 'Light Music' },
+                                 { value: 'HARMONIUM', label: 'Harmonium' },
+                                 { value: 'GUITAR', label: 'Guitar' },
                               ]}
                               searchable
                               clearable
                               {...form.getInputProps('musicOption')}
                            />
-                          
+
                            <Textarea
                               label="Address"
                               placeholder="Enter your address"
                               {...form.getInputProps('address')}
                            />
-                          
-                           <Button type="submit" className="register-button" fullWidth mt="xs" radius="md">
+
+                           <Button type="submit" className="register-button" fullWidth mt="xs" radius="md" loading={loading}>
                               Create my account <span aria-hidden="true">→</span>
                            </Button>
                            {/* <Text size="sm" c="dimmed" ta="center">
