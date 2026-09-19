@@ -1,38 +1,89 @@
-import React from 'react'
-import { ActionIcon, Avatar, Burger, Group, Menu, Text, Tooltip } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { removeUser } from '../../Slice/UserSlice';
-import { removeJwt } from '../../Slice/JwtSlice';
-const Header = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const user = useSelector((state:any)=>state.user);
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { ActionIcon } from '@mantine/core';
+import { IconBellRinging } from '@tabler/icons-react';
 
-  const handleLogout = () =>{
-    dispatch(removeJwt());
-    dispatch(removeUser());
-    navigate("/login");
-  }
-  return (
-    <header className="admin-topbar">
-      <Group gap="sm">
-        <Burger hiddenFrom="md" size="sm" aria-label="Open navigation" />
-        <Text className="admin-topbar__title">Administration</Text>
-      </Group>
-      <Group gap="xs">
-        <Tooltip label="Notifications"><ActionIcon variant="subtle" color="gray" size="lg" aria-label="Notifications">♧</ActionIcon></Tooltip>
-        <Menu shadow="md" width={180} position="bottom-end">
-          <Menu.Target><button className="admin-profile" type="button"><Avatar size="sm" radius="xl" color="orange">TS</Avatar><span>{user.name}</span>⌄</button></Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item color="red" onClick={handleLogout}>
-              Sign out
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-      </Group>
-    </header>
-  )
+interface HeaderProps {
+  onMenuClick: () => void;
 }
 
-export default Header
+const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
+  const user = useSelector((state: any) => state.user);
+  const jwt = useSelector((state: any) => state.jwt);
+
+  // Get username safely
+  const username = user?.name || 'Admin';
+
+  // Get first letter
+  const firstLetter = username.charAt(0).toUpperCase();
+
+  return (
+    <header className="admin-header">
+
+      {/* ================= BURGER BUTTON ================= */}
+      <button
+        className="menu-button"
+        onClick={onMenuClick}
+        aria-label="Open menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+
+      {/* ================= PAGE TITLE ================= */}
+      <div className="header-title">
+        Admin Dashboard
+      </div>
+
+
+      {/* ================= RIGHT SIDE ================= */}
+      <div className="header-right">
+
+        {jwt && (
+          <div className="header-user">
+
+            {/* Notification */}
+            <ActionIcon
+              variant="subtle"
+              size="lg"
+              className="notification-button"
+              aria-label="Notifications"
+            >
+              <IconBellRinging
+                size={21}
+                stroke={1.8}
+              />
+            </ActionIcon>
+
+
+            {/* User Name + Role */}
+            <div className="header-username">
+
+              <span className="username">
+                {username}
+              </span>
+
+              <span className="user-role">
+                Administrator
+              </span>
+
+            </div>
+
+
+            {/* User Avatar */}
+            <div className="header-avatar">
+              {firstLetter}
+            </div>
+
+          </div>
+        )}
+
+      </div>
+
+    </header>
+  );
+};
+
+export default Header;

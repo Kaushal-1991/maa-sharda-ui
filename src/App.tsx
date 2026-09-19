@@ -19,7 +19,7 @@ function App() {
         <ModalsProvider>
           <PrimeReactProvider>
             <AppRoutes />
-            <Notifications position="top-center" />
+            <Notifications position="top-center" zIndex={99999} />
           </PrimeReactProvider>
         </ModalsProvider>
       </MantineProvider>
