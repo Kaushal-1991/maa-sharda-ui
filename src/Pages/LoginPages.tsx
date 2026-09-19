@@ -1,12 +1,18 @@
 import { useForm } from '@mantine/form';
-import { Anchor, Button, Checkbox, Container, Group, PasswordInput, Paper, Stack, Text, TextInput, Title } from '@mantine/core';
-import { Link, useNavigate } from 'react-router-dom';
+import {Button,Container, PasswordInput, Paper, Stack, Text, TextInput, Title } from '@mantine/core';
 import Footer from '../components/Footer/Footer';
 import Header from '../components/Header/Header';
 import maaShardaLogo from '../images/maa-sharda.jpeg';
+import { login } from '../Service/AuthService';
+import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { errorNotification, successNotification } from '../Utility/NotificationUtil';
+import { jwtDecode } from 'jwt-decode';
+import { setJwt } from '../Slice/JwtSlice';
 
-const Login = () => {
-  const navigate = useNavigate();
+const LoginPages = () => {
+ const dispatch = useDispatch();
+ const [loading,setLoading] = useState(false);
   const form = useForm({
     initialValues: {
       email: '',
@@ -18,6 +24,26 @@ const Login = () => {
       password: (value) => (value.length >= 6 ? null : 'Password must be at least 6 characters'),
     },
   });
+
+  const handleSubmit = (values: typeof form.values) => {
+       setLoading(true);
+       login(values).then((_data:any)=>{
+           successNotification("Login Sucessfully!!!");
+           setLoading(false);
+           dispatch(setJwt(_data.accessToken));
+           try{
+              const decodedUser = jwtDecode(_data.accessToken);
+              console.log("decodedUser=====>"+decodedUser);
+           }catch{
+               errorNotification("Unable to decode token");
+           }
+       }).catch(error=>{
+           console.log(error?.response?.data?.errorMessage);
+           errorNotification(error?.response?.data?.errorMessage);
+       }).finally(()=>{
+           setLoading(false);
+       });
+  }
 
   return (
     <div className="login-page">
@@ -43,7 +69,7 @@ const Login = () => {
             <Text c="dimmed" size="sm" mt={6} mb="xl">
               Use your academy account details below.
             </Text>
-            <form onSubmit={form.onSubmit(() => navigate('/admin'))}>
+            <form onSubmit={form.onSubmit(handleSubmit)}>
               <Stack gap="md">
                 <TextInput
                   label="Email address"
@@ -58,16 +84,10 @@ const Login = () => {
                   radius="md"
                   {...form.getInputProps('password')}
                 />
-                <Group className="login-options" justify="space-between">
-                  <Checkbox label="Remember me" {...form.getInputProps('remember', { type: 'checkbox' })} />
-                  <Anchor href="#forgot-password" size="sm">Forgot password?</Anchor>
-                </Group>
-                <Button type="submit" className="register-button" fullWidth radius="md" mt="xs">
+                <Button type="submit" className="register-button" fullWidth radius="md" mt="xs" loading={loading}>
                   Sign in <span aria-hidden="true">→</span>
                 </Button>
-                <Text size="sm" c="dimmed" ta="center">
-                  New to the academy? <Anchor component={Link} to="/register">Create an account</Anchor>
-                </Text>
+               
               </Stack>
             </form>
           </Paper>
@@ -78,4 +98,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPages;

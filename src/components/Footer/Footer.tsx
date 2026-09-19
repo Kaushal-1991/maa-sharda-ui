@@ -30,6 +30,9 @@ const Footer = () => {
           <Anchor component={Link} to="/register" className="footer-link">
             Register
           </Anchor>
+          <Anchor component={Link} to="/login" className="footer-link">
+            Login
+          </Anchor>
         </Group>
       </Container>
       <Container size="lg" className="footer-bottom">
