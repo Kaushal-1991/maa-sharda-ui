@@ -1,22 +1,19 @@
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import React, { JSX } from "react";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 
-interface ProtectedRoutesProps {
-  children: React.ReactNode;
+interface ProtectedRouteProps {
+  children: JSX.Element;
 }
 
-const ProtectedRoutes: React.FC<ProtectedRoutesProps> = ({ children }) => {
-  const token = localStorage.getItem('token');
-  const location = useLocation();
+const ProtectedRoutes: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const token = useSelector((state: any) => state.jwt);
 
-  console.log('Current path:', location.pathname);
-  console.log('Token:', token);
-
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  if (token) {
+    return children;
   }
 
-  return <>{children}</>;
+  return <Navigate to="/login"/>;
 };
 
 export default ProtectedRoutes;
