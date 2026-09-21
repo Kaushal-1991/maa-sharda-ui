@@ -1,17 +1,19 @@
-import React, { JSX } from "react"
-import { useSelector } from "react-redux"
-import { Navigate } from "react-router-dom";
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 
-interface PublicRouteProps{
-    children:JSX.Element
+interface PublicRouteProps {
+  children: React.ReactNode;
 }
 
-const PublicRoutes:React.FC<PublicRouteProps>=({children}) => {
-    const token = useSelector((state:any)=>state.jwt);
-    if(token){
-        return <Navigate to="/admin/dashboard" replace />
-    }
-    return children;
-}
+const PublicRoutes: React.FC<PublicRouteProps> = ({ children }) => {
+
+  const token = localStorage.getItem('token');
+
+  if (token) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
+  return <>{children}</>;
+};
 
 export default PublicRoutes;

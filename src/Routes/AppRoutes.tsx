@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import About from '../Pages/About';
 import Classes from '../Pages/Classes';
 import Contact from '../Pages/Contact';
@@ -21,16 +21,17 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<PublicRoutes><LoginPages /></PublicRoutes>} />
-         <Route path="/admin" element={<ProtectedRoutes><AdminDashboard /></ProtectedRoutes>}>
-          <Route index element={<Dashboard />} />
-          <Route path="dashboard" element={<Dashboard />} /> 
-          <Route path="students" element={<Student />} /> 
-        </Route>
         <Route path="/about" element={<About /> }/>
         <Route path="/classes" element={<Classes />} />
         <Route path="/events" element={<Events />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/login" element={<PublicRoutes><LoginPages /></PublicRoutes>} />
+         <Route path="/admin" element={<ProtectedRoutes><AdminDashboard /></ProtectedRoutes>}>
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<Dashboard />} /> 
+          <Route path="students" element={<Student />} /> 
+        </Route>
+      
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
