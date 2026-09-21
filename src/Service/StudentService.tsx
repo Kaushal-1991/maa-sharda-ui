@@ -8,3 +8,8 @@ export const fetchStudents = async () => {
     const response = await axiosInstance.get("/api/students/getAll");
     return response.data;
 };
+
+export const countStudents = async () => {
+    const response = await axiosInstance.get("/api/students/count");
+    return response.data; 
+}

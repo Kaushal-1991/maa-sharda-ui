@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Badge,
@@ -30,49 +30,123 @@ import {
 } from '@tabler/icons-react';
 
 import maaShardaLogo from '../../images/maa-sharda.jpeg';
+import { countStudents } from '../../Service/StudentService';
+import { errorNotification } from '../../Utility/NotificationUtil';
 
 
-/* =====================================================
-   DATA
-===================================================== */
+// =====================================================
+// TYPES
+// =====================================================
 
-const totalStudents = 128;
+interface StudentCount {
+  totalClassicalMusicStudent: number;
+  totalGuitarStudent: number;
+  totalHarmoniumStudent: number;
+  totalLightMusicStudent: number;
+  totalStudent: number;
+}
+
+
+// =====================================================
+// PROGRAM CONFIGURATION
+// =====================================================
 
 const programs = [
   {
     label: 'Classical Music',
-    count: 42,
     color: 'yellow',
     icon: IconMusic,
+
+    getCount: (data: StudentCount | null) =>
+      data?.totalClassicalMusicStudent ?? 0,
   },
+
   {
     label: 'Light Music',
-    count: 30,
     color: 'pink',
     icon: IconMicrophone,
+
+    getCount: (data: StudentCount | null) =>
+      data?.totalLightMusicStudent ?? 0,
   },
+
   {
     label: 'Harmonium',
-    count: 24,
     color: 'green',
     icon: IconPiano,
+
+    getCount: (data: StudentCount | null) =>
+      data?.totalHarmoniumStudent ?? 0,
   },
+
   {
     label: 'Guitar',
-    count: 32,
     color: 'violet',
     icon: IconGuitarPick,
+
+    getCount: (data: StudentCount | null) =>
+      data?.totalGuitarStudent ?? 0,
   },
 ];
 
 
-/* =====================================================
-   DASHBOARD
-===================================================== */
+// =====================================================
+// DASHBOARD
+// =====================================================
 
 const Dashboard: React.FC = () => {
 
+  const [studentCount, setStudentCount] =
+    useState<StudentCount | null>(null);
+
+
+  // =====================================================
+  // GET STUDENT COUNTS
+  // =====================================================
+
+  useEffect(() => {
+
+    getStudentsCount();
+
+  }, []);
+
+
+  const getStudentsCount = () => {
+
+    countStudents()
+      .then((data: StudentCount) => {
+
+        console.log("API DATA =====>", data);
+
+        setStudentCount(data);
+
+      })
+      .catch(error => {
+
+        errorNotification(
+          error?.response?.data?.message ||
+          error.message ||
+          "Something went wrong"
+        );
+
+      });
+  };
+
+
+  // =====================================================
+  // TOTAL STUDENTS
+  // =====================================================
+
+  const totalStudents =
+    studentCount?.totalStudent ?? 0;
+
+
+  // =====================================================
+  // RENDER
+  // =====================================================
+
   return (
+
     <Container
       fluid
       px={{ base: 'sm', sm: 'lg' }}
@@ -138,6 +212,7 @@ const Dashboard: React.FC = () => {
 
                 </Group>
 
+
                 <Title
                   order={2}
                   c="white"
@@ -145,6 +220,7 @@ const Dashboard: React.FC = () => {
                 >
                   Welcome to Maa Sharda Academy
                 </Title>
+
 
                 <Text
                   size="sm"
@@ -167,10 +243,12 @@ const Dashboard: React.FC = () => {
               variant="light"
               color="yellow"
             >
+
               <IconSchool
                 size={36}
                 stroke={1.5}
               />
+
             </ThemeIcon>
 
           </Group>
@@ -199,11 +277,13 @@ const Dashboard: React.FC = () => {
               Academy Overview
             </Text>
 
+
             <Title order={3}>
               Student Statistics
             </Title>
 
           </Stack>
+
 
           <Badge
             color="blue"
@@ -231,7 +311,10 @@ const Dashboard: React.FC = () => {
           spacing="md"
         >
 
-          {/* TOTAL STUDENTS */}
+
+          {/* =================================================
+              TOTAL STUDENTS
+          ================================================= */}
 
           <Card
             radius="lg"
@@ -253,11 +336,14 @@ const Dashboard: React.FC = () => {
                 color="white"
                 variant="light"
               >
+
                 <IconUsers
                   size={26}
                   stroke={1.8}
                 />
+
               </ThemeIcon>
+
 
               <Badge
                 color="white"
@@ -268,6 +354,7 @@ const Dashboard: React.FC = () => {
               </Badge>
 
             </Group>
+
 
             <Stack
               gap={2}
@@ -281,12 +368,14 @@ const Dashboard: React.FC = () => {
                 Total Students
               </Text>
 
+
               <Text
                 size="36px"
                 fw={800}
               >
                 {totalStudents}
               </Text>
+
 
               <Text
                 size="xs"
@@ -300,15 +389,25 @@ const Dashboard: React.FC = () => {
           </Card>
 
 
-          {/* PROGRAM CARDS */}
+          {/* =================================================
+              PROGRAM CARDS
+          ================================================= */}
 
           {programs.map((program) => {
 
             const Icon = program.icon;
 
-            const percentage = Math.round(
-              (program.count / totalStudents) * 100
-            );
+            const count =
+              program.getCount(studentCount);
+
+
+            const percentage =
+              totalStudents > 0
+                ? Math.round(
+                    (count / totalStudents) * 100
+                  )
+                : 0;
+
 
             return (
 
@@ -331,11 +430,14 @@ const Dashboard: React.FC = () => {
                     variant="light"
                     color={program.color}
                   >
+
                     <Icon
                       size={24}
                       stroke={1.8}
                     />
+
                   </ThemeIcon>
+
 
                   <Badge
                     variant="light"
@@ -360,6 +462,7 @@ const Dashboard: React.FC = () => {
                     {program.label}
                   </Text>
 
+
                   <Group
                     align="baseline"
                     gap={5}
@@ -369,8 +472,9 @@ const Dashboard: React.FC = () => {
                       size="30px"
                       fw={800}
                     >
-                      {program.count}
+                      {count}
                     </Text>
+
 
                     <Text
                       size="xs"
@@ -380,6 +484,7 @@ const Dashboard: React.FC = () => {
                     </Text>
 
                   </Group>
+
 
                   <Progress
                     value={percentage}
@@ -394,6 +499,7 @@ const Dashboard: React.FC = () => {
               </Card>
 
             );
+
           })}
 
         </SimpleGrid>
@@ -436,18 +542,20 @@ const Dashboard: React.FC = () => {
                   variant="light"
                   color="blue"
                 >
+
                   <IconChartBar
                     size={22}
                   />
+
                 </ThemeIcon>
+
 
                 <Stack gap={0}>
 
-                  <Text
-                    fw={700}
-                  >
+                  <Text fw={700}>
                     Program Distribution
                   </Text>
+
 
                   <Text
                     size="xs"
@@ -467,11 +575,19 @@ const Dashboard: React.FC = () => {
 
               {programs.map((program) => {
 
-                const percentage = Math.round(
-                  (program.count / totalStudents) * 100
-                );
-
                 const Icon = program.icon;
+
+                const count =
+                  program.getCount(studentCount);
+
+
+                const percentage =
+                  totalStudents > 0
+                    ? Math.round(
+                        (count / totalStudents) * 100
+                      )
+                    : 0;
+
 
                 return (
 
@@ -490,8 +606,11 @@ const Dashboard: React.FC = () => {
                           variant="light"
                           color={program.color}
                         >
+
                           <Icon size={15} />
+
                         </ThemeIcon>
+
 
                         <Text size="sm">
                           {program.label}
@@ -499,11 +618,12 @@ const Dashboard: React.FC = () => {
 
                       </Group>
 
+
                       <Text
                         size="sm"
                         fw={700}
                       >
-                        {program.count}
+                        {count}
                       </Text>
 
                     </Group>
@@ -544,11 +664,10 @@ const Dashboard: React.FC = () => {
 
               <Stack gap={2}>
 
-                <Text
-                  fw={700}
-                >
+                <Text fw={700}>
                   Enrollment Overview
                 </Text>
+
 
                 <Text
                   size="xs"
@@ -558,6 +677,7 @@ const Dashboard: React.FC = () => {
                 </Text>
 
               </Stack>
+
 
               <Badge
                 color="green"
@@ -577,7 +697,7 @@ const Dashboard: React.FC = () => {
                 roundCaps
                 sections={[
                   {
-                    value: 100,
+                    value: totalStudents > 0 ? 100 : 0,
                     color: 'blue',
                   },
                 ]}
@@ -596,6 +716,7 @@ const Dashboard: React.FC = () => {
                       >
                         {totalStudents}
                       </Text>
+
 
                       <Text
                         size="xs"
@@ -632,6 +753,7 @@ const Dashboard: React.FC = () => {
                   Programs
                 </Text>
 
+
                 <Text
                   size="xl"
                   fw={700}
@@ -655,6 +777,7 @@ const Dashboard: React.FC = () => {
                 >
                   Students
                 </Text>
+
 
                 <Text
                   size="xl"
@@ -696,14 +819,18 @@ const Dashboard: React.FC = () => {
                 variant="light"
                 color="yellow"
               >
+
                 <IconMusic size={21} />
+
               </ThemeIcon>
+
 
               <Stack gap={0}>
 
                 <Text fw={600}>
                   Maa Sharda Music Programs
                 </Text>
+
 
                 <Text
                   size="xs"
@@ -728,10 +855,13 @@ const Dashboard: React.FC = () => {
 
         </Paper>
 
+
       </Stack>
 
     </Container>
+
   );
 };
+
 
 export default Dashboard;
