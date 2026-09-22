@@ -2,7 +2,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
 // const SOCKET_URL = "http://localhost:8080/ws";
-const SOCKET_URL = "http://maa-sharda-academy-production.up.railway.app/ws"
+const SOCKET_URL = "https://maa-sharda-academy-production.up.railway.app/ws"
 
 let client: Client | null = null;
 
