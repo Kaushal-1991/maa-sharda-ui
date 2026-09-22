@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { ActionIcon } from '@mantine/core';
-import { IconBellRinging } from '@tabler/icons-react';
+import NotificationBell from './NotificationBell';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -45,17 +44,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           <div className="header-user">
 
             {/* Notification */}
-            <ActionIcon
-              variant="subtle"
-              size="lg"
-              className="notification-button"
-              aria-label="Notifications"
-            >
-              <IconBellRinging
-                size={21}
-                stroke={1.8}
-              />
-            </ActionIcon>
+             <NotificationBell />
+           
 
 
             {/* User Name + Role */}
