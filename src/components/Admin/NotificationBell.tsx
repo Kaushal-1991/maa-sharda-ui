@@ -19,7 +19,12 @@ import {
 } from "@tabler/icons-react";
 
 import { useEffect, useState } from "react";
-import { connectNotificationSocket, disconnectNotificationSocket } from "../../Service/NotificationService";
+
+import {
+  connectNotificationSocket,
+  disconnectNotificationSocket,
+} from "../../Service/NotificationService";
+import axiosInstance from "../../Interceptor/AxioxInterceptor";
 
 
 
@@ -39,17 +44,122 @@ const NotificationBell = () => {
     useState<Notification[]>([]);
 
 
+  // =====================================================
+  // LOAD OLD NOTIFICATIONS FROM DATABASE
+  // =====================================================
+
+  const fetchNotifications = async () => {
+
+    try {
+
+      console.log(
+        "📥 Loading old notifications..."
+      );
+
+      const response =
+        await axiosInstance.get(
+          "/api/notifications"
+        );
+
+      console.log(
+        "📥 Old notifications:",
+        response.data
+      );
+
+      setNotifications(response.data);
+
+    } catch (error) {
+
+      console.error(
+        "❌ Failed to load notifications:",
+        error
+      );
+
+    }
+
+  };
+
+
+  // =====================================================
+  // MARK NOTIFICATION AS READ
+  // =====================================================
+
+  const markAsRead = async (
+    notificationId: number
+  ) => {
+
+    try {
+
+      await axiosInstance.put(
+        `/api/notifications/${notificationId}/read`
+      );
+
+      setNotifications((prev) =>
+        prev.map((notification) =>
+          notification.id === notificationId
+            ? {
+                ...notification,
+                read: true,
+              }
+            : notification
+        )
+      );
+
+    } catch (error) {
+
+      console.error(
+        "❌ Failed to mark notification as read:",
+        error
+      );
+
+    }
+
+  };
+
+
+  // =====================================================
+  // WEBSOCKET
+  // =====================================================
+
   useEffect(() => {
+
+    // 1️⃣ Load old notifications
+    fetchNotifications();
+
+
+    // 2️⃣ Listen for new notifications
     connectNotificationSocket(
       (notification: Notification) => {
 
-        setNotifications((prev) => [
+        console.log(
+          "🔔 New notification received:",
+          notification
+        );
 
-          notification,
 
-          ...prev,
+        setNotifications((prev) => {
 
-        ]);
+          // Prevent duplicate notification
+          const exists =
+            prev.some(
+              (item) =>
+                item.id === notification.id
+            );
+
+          if (exists) {
+            return prev;
+          }
+
+
+          return [
+            {
+              ...notification,
+              read: false,
+            },
+            ...prev,
+          ];
+
+        });
 
       }
     );
@@ -64,13 +174,26 @@ const NotificationBell = () => {
   }, []);
 
 
+  // =====================================================
+  // UNREAD COUNT
+  // =====================================================
+
   const unreadCount =
     notifications.filter(
-      (notification) => !notification.read
+      (notification) =>
+        !notification.read
     ).length;
 
 
+  // =====================================================
+  // DATE
+  // =====================================================
+
   const formatDate = (date: string) => {
+
+    if (!date) {
+      return "";
+    }
 
     return new Date(date).toLocaleString();
 
@@ -93,7 +216,7 @@ const NotificationBell = () => {
           label={
             unreadCount > 99
               ? "99+"
-              : unreadCount
+              : String(unreadCount)
           }
           size={18}
           offset={5}
@@ -130,9 +253,7 @@ const NotificationBell = () => {
 
           <Group gap="xs">
 
-            <IconBell
-              size={19}
-            />
+            <IconBell size={19} />
 
             <Text fw={700}>
               Notifications
@@ -148,9 +269,7 @@ const NotificationBell = () => {
               color="blue"
               variant="light"
             >
-
               {unreadCount} New
-
             </Badge>
 
           )}
@@ -163,15 +282,11 @@ const NotificationBell = () => {
 
         {/* NOTIFICATIONS */}
 
-        <ScrollArea
-          h={350}
-        >
+        <ScrollArea h={350}>
 
           {notifications.length === 0 ? (
 
-            <Center
-              h={300}
-            >
+            <Center h={300}>
 
               <Stack
                 align="center"
@@ -185,9 +300,7 @@ const NotificationBell = () => {
                   color="gray"
                 >
 
-                  <IconBell
-                    size={25}
-                  />
+                  <IconBell size={25} />
 
                 </ThemeIcon>
 
@@ -213,9 +326,7 @@ const NotificationBell = () => {
 
           ) : (
 
-            <Stack
-              gap={0}
-            >
+            <Stack gap={0}>
 
               {notifications.map(
                 (notification) => (
@@ -223,6 +334,17 @@ const NotificationBell = () => {
                   <Menu.Item
                     key={notification.id}
                     py="sm"
+                    onClick={() => {
+
+                      if (!notification.read) {
+
+                        markAsRead(
+                          notification.id
+                        );
+
+                      }
+
+                    }}
                   >
 
                     <Group
@@ -253,7 +375,11 @@ const NotificationBell = () => {
 
                         <Text
                           size="sm"
-                          fw={600}
+                          fw={
+                            notification.read
+                              ? 500
+                              : 700
+                          }
                         >
                           {notification.title}
                         </Text>
@@ -317,14 +443,10 @@ const NotificationBell = () => {
             size="xs"
             c="dimmed"
           >
-
             Real-time notifications
-
           </Text>
 
-          <IconCheck
-            size={14}
-          />
+          <IconCheck size={14} />
 
         </Group>
 
@@ -333,6 +455,7 @@ const NotificationBell = () => {
     </Menu>
 
   );
+
 };
 
 
