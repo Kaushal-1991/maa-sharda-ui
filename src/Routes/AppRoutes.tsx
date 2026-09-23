@@ -11,7 +11,7 @@ import PublicRoutes from './PublicRoutes';
 import ProtectedRoutes from './ProtectedRoutes';
 import AdminDashboard from '../Layout/AdminDashboard';
 import Dashboard from '../components/Admin/Dashboard';
-import Student from '../components/Admin/Student';
+import Student from '../components/Student/Student';
 import NotFound from '../Pages/NotFound';
 
 
