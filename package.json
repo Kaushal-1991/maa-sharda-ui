@@ -25,6 +25,7 @@
     "dayjs": "^1.11.23",
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "jspdf": "^4.2.1",
     "jwt-decode": "^4.0.0",
     "primeicons": "^8.0.1",
     "primereact": "^10.9.9",

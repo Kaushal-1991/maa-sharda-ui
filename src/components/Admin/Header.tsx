@@ -1,6 +1,6 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import NotificationBell from './NotificationBell';
+import React from "react";
+import { useSelector } from "react-redux";
+// import NotificationBell from './NotificationBell';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -11,14 +11,13 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const jwt = useSelector((state: any) => state.jwt);
 
   // Get username safely
-  const username = user?.name || 'Admin';
+  const username = user?.name || "Admin";
 
   // Get first letter
   const firstLetter = username.charAt(0).toUpperCase();
 
   return (
     <header className="admin-header">
-
       {/* ================= BURGER BUTTON ================= */}
       <button
         className="menu-button"
@@ -30,48 +29,28 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         <span></span>
       </button>
 
-
       {/* ================= PAGE TITLE ================= */}
-      <div className="header-title">
-        Admin Dashboard
-      </div>
-
+      <div className="header-title">Admin Dashboard</div>
 
       {/* ================= RIGHT SIDE ================= */}
       <div className="header-right">
-
         {jwt && (
           <div className="header-user">
-
             {/* Notification */}
-             <NotificationBell />
-           
-
+            {/* <NotificationBell /> */}
 
             {/* User Name + Role */}
             <div className="header-username">
+              <span className="username">{username}</span>
 
-              <span className="username">
-                {username}
-              </span>
-
-              <span className="user-role">
-                Administrator
-              </span>
-
+              <span className="user-role">Administrator</span>
             </div>
-
 
             {/* User Avatar */}
-            <div className="header-avatar">
-              {firstLetter}
-            </div>
-
+            <div className="header-avatar">{firstLetter}</div>
           </div>
         )}
-
       </div>
-
     </header>
   );
 };

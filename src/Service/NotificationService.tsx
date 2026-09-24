@@ -1,115 +1,116 @@
-import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
+// import { Client } from "@stomp/stompjs";
+// import SockJS from "sockjs-client";
 
-const SOCKET_URL =
-  "https://maa-sharda-academy-production.up.railway.app/ws";
+// const SOCKET_URL =
+//   "https://maa-sharda-academy-production.up.railway.app/ws";
 
-let client: Client | null = null;
+// let client: Client | null = null;
 
-export const connectNotificationSocket = (
-  onNotification: (notification: any) => void
-) => {
+// export const connectNotificationSocket = (
+//   onNotification: (notification: any) => void
+// ) => {
 
-  if (client?.active) {
-    console.log("WebSocket already connected");
-    return;
-  }
+//   if (client?.active) {
+//     console.log("WebSocket already connected");
+//     return;
+//   }
 
-  client = new Client({
+//   client = new Client({
 
-    webSocketFactory: () => {
-      console.log("Creating SockJS connection...");
-      return new SockJS(SOCKET_URL);
-    },
+//     webSocketFactory: () => {
+//       console.log("Creating SockJS connection...");
+//       return new SockJS(SOCKET_URL);
+//     },
 
-    reconnectDelay: 5000,
+//     reconnectDelay: 5000,
 
-    debug: (message) => {
-      console.log("[STOMP]", message);
-    },
+//     debug: (message) => {
+//       console.log("[STOMP]", message);
+//     },
 
-    onConnect: () => {
+//     onConnect: () => {
 
-      console.log("✅ WebSocket connected");
+//       console.log("✅ WebSocket connected");
 
-      client?.subscribe(
-        "/topic/notifications",
-        (message) => {
+//       client?.subscribe(
+//         "/topic/notifications",
+//         (message) => {
 
-          try {
+//           try {
 
-            const notification =
-              JSON.parse(message.body);
+//             const notification =
+//               JSON.parse(message.body);
 
-            console.log(
-              "🔔 New notification:",
-              notification
-            );
+//             console.log(
+//               "🔔 New notification:",
+//               notification
+//             );
 
-            onNotification(notification);
+//             onNotification(notification);
 
-          } catch (error) {
+//           } catch (error) {
 
-            console.error(
-              "Notification JSON parse error:",
-              error
-            );
+//             console.error(
+//               "Notification JSON parse error:",
+//               error
+//             );
 
-          }
+//           }
 
-        }
-      );
+//         }
+//       );
 
-      console.log(
-        "✅ Subscribed to /topic/notifications"
-      );
-    },
+//       console.log(
+//         "✅ Subscribed to /topic/notifications"
+//       );
+//     },
 
-    onDisconnect: () => {
+//     onDisconnect: () => {
 
-      console.log(
-        "WebSocket disconnected"
-      );
+//       console.log(
+//         "WebSocket disconnected"
+//       );
 
-    },
+//     },
 
-    onStompError: (frame) => {
+//     onStompError: (frame) => {
 
-      console.error(
-        "STOMP ERROR:",
-        frame.headers["message"]
-      );
+//       console.error(
+//         "STOMP ERROR:",
+//         frame.headers["message"]
+//       );
 
-      console.error(
-        "STOMP BODY:",
-        frame.body
-      );
+//       console.error(
+//         "STOMP BODY:",
+//         frame.body
+//       );
 
-    },
+//     },
 
-    onWebSocketError: (error) => {
+//     onWebSocketError: (error) => {
 
-      console.error(
-        "WebSocket error:",
-        error
-      );
+//       console.error(
+//         "WebSocket error:",
+//         error
+//       );
 
-    }
+//     }
 
-  });
+//   });
 
-  client.activate();
-};
+//   client.activate();
+// };
 
+// export const disconnectNotificationSocket = () => {
 
-export const disconnectNotificationSocket = () => {
+//   if (client) {
 
-  if (client) {
+//     client.deactivate();
 
-    client.deactivate();
+//     client = null;
 
-    client = null;
+//   }
 
-  }
+// };
 
-};
+export {};

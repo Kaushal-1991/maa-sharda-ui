@@ -5,23 +5,29 @@ import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
 import "./Student.css";
+import "primeicons/primeicons.css";
 
 import {
   IconEdit,
   IconTrash,
   IconSearch,
   IconUsers,
-  IconDownload,
 } from "@tabler/icons-react";
 
 import { ActionIcon, Switch, Text, Tooltip } from "@mantine/core";
 import { modals } from "@mantine/modals";
 
-import { deleteStudents, fetchStudents } from "../../Service/StudentService";
+import {
+  deleteStudents,
+  fetchStudents,
+  registrationStudent,
+} from "../../Service/StudentService";
+
 import {
   errorNotification,
   successNotification,
 } from "../../Utility/NotificationUtil";
+import RegistrationCertificate from "./RegistrationCertificate";
 
 const Student = () => {
   const [globalFilterValue, setGlobalFilterValue] = useState("");
@@ -166,7 +172,7 @@ const Student = () => {
             getFetchStudent();
           })
           .catch((error) => {
-            console.error("Error deleteing student:", error);
+            console.error("Error deleting student:", error);
             errorNotification("Failed to delete student.");
           });
       },
@@ -196,38 +202,81 @@ const Student = () => {
         </Tooltip>
 
         {/* Enable / Disable */}
-        <Tooltip label={rowData.enabled ? "Disable Student" : "Enable Student"}>
-          <Switch
-            size="sm"
-            checked={rowData.enabled}
-            onChange={(event) => {
-              const enabled = event.currentTarget.checked;
 
-              console.log("Student:", rowData.id, "Enabled:", enabled);
+        <Switch
+          size="sm"
+          color="blue"
+          checked={rowData.registrationStatus === "COMPLETED"}
+          disabled={rowData.registrationStatus === "COMPLETED"}
+          styles={{
+            track: {
+              opacity:
+                rowData.registrationStatus === "COMPLETED" ? 1 : undefined,
 
-              // Call your API here
-              // handleStatusChange(rowData, enabled);
-            }}
-          />
-        </Tooltip>
+              backgroundColor:
+                rowData.registrationStatus === "COMPLETED"
+                  ? "#228be6"
+                  : undefined,
 
+              borderColor:
+                rowData.registrationStatus === "COMPLETED"
+                  ? "#228be6"
+                  : undefined,
+            },
+
+            thumb: {
+              backgroundColor:
+                rowData.registrationStatus === "COMPLETED"
+                  ? "#ffffff"
+                  : undefined,
+            },
+          }}
+          onChange={(event) => {
+            const completed = event.currentTarget.checked;
+
+            if (!completed) {
+              return;
+            }
+
+            const newStatus = "COMPLETED";
+
+            registrationStudent(rowData.id, newStatus)
+              .then(() => {
+                setStudents((prevStudents) =>
+                  prevStudents.map((student) =>
+                    student.id === rowData.id
+                      ? {
+                          ...student,
+                          registrationStatus: newStatus,
+                        }
+                      : student,
+                  ),
+                );
+
+                successNotification("Registration is completed");
+              })
+              .catch((error) => {
+                console.error(error);
+                errorNotification("Error while updating registration");
+              });
+          }}
+        />
         {/* Download */}
-        <Tooltip label="Download Student">
-          <ActionIcon
-            size={30}
-            color="green"
-            variant="light"
-            className="student-action-btn"
-            onClick={() => {
-              console.log("Download student:", rowData);
-
-              // handleDownload(rowData);
-            }}
-          >
-            <IconDownload size={16} stroke={1.7} />
-          </ActionIcon>
-        </Tooltip>
-
+        {students &&
+          students.map((student: any) => {
+            if (
+              student.id === rowData.id &&
+              student.registrationStatus === "COMPLETED"
+            ) {
+              return (
+                <Tooltip key={student.id} label="Download Student">
+                  <div>
+                    <RegistrationCertificate student={rowData} />
+                  </div>
+                </Tooltip>
+              );
+            }
+          })}
         {/* Delete */}
         <Tooltip label="Delete Student">
           <ActionIcon
@@ -241,6 +290,19 @@ const Student = () => {
           </ActionIcon>
         </Tooltip>
       </div>
+    );
+  };
+
+  const registrationStatusTemplate = (rowData: any) => {
+    const isCompleted = rowData.registrationStatus === "COMPLETED";
+
+    return (
+      <Tag
+        value={isCompleted ? "COMPLETED" : "PENDING"}
+        severity={isCompleted ? "success" : "danger"}
+        icon={isCompleted ? "pi pi-check-circle" : "pi pi-clock"}
+        className="student-status-badge"
+      />
     );
   };
 
@@ -269,7 +331,13 @@ const Student = () => {
           rowsPerPageOptions={[10, 25, 50]}
           dataKey="id"
           filters={filters}
-          globalFilterFields={["name", "email", "phone", "musicOption"]}
+          globalFilterFields={[
+            "name",
+            "email",
+            "phone",
+            "musicOption",
+            "registrationStatus",
+          ]}
           emptyMessage={
             <div className="student-empty">
               <span className="empty-icon">📭</span>
@@ -326,6 +394,16 @@ const Student = () => {
             header="Music"
             sortable
             body={musicTypeTemplate}
+            style={{
+              minWidth: "11rem",
+            }}
+          />
+
+          <Column
+            field="registrationStatus"
+            header="Status"
+            sortable
+            body={registrationStatusTemplate}
             style={{
               minWidth: "11rem",
             }}
