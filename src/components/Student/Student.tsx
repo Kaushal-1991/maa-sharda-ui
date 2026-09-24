@@ -262,17 +262,23 @@ const Student = () => {
           }}
         />
         {/* Download */}
-        {students?.find(
-          (student: any) =>
-            student.id === rowData.id &&
-            student.registrationStatus === "COMPLETED",
-        ) && (
-          <Tooltip label="Download Student">
-            <div>
-              <RegistrationCertificate student={rowData} />
-            </div>
-          </Tooltip>
-        )}
+        {(() => {
+          const completedStudent = students?.find(
+            (student: any) =>
+              student.id === rowData.id &&
+              student.registrationStatus === "COMPLETED",
+          );
+
+          return (
+            completedStudent && (
+              <Tooltip label="Download Student">
+                <div>
+                  <RegistrationCertificate student={completedStudent} />
+                </div>
+              </Tooltip>
+            )
+          );
+        })()}
         {/* Delete */}
         <Tooltip label="Delete Student">
           <ActionIcon
