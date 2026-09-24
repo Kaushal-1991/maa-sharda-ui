@@ -262,21 +262,17 @@ const Student = () => {
           }}
         />
         {/* Download */}
-        {students &&
-          students.map((student: any) => {
-            if (
-              student.id === rowData.id &&
-              student.registrationStatus === "COMPLETED"
-            ) {
-              return (
-                <Tooltip key={student.id} label="Download Student">
-                  <div>
-                    <RegistrationCertificate student={rowData} />
-                  </div>
-                </Tooltip>
-              );
-            }
-          })}
+        {students?.find(
+          (student: any) =>
+            student.id === rowData.id &&
+            student.registrationStatus === "COMPLETED",
+        ) && (
+          <Tooltip label="Download Student">
+            <div>
+              <RegistrationCertificate student={rowData} />
+            </div>
+          </Tooltip>
+        )}
         {/* Delete */}
         <Tooltip label="Delete Student">
           <ActionIcon
