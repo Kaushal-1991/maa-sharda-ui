@@ -21,12 +21,12 @@ import {
   deleteStudents,
   fetchStudents,
   registrationStudent,
-} from "../../Service/StudentService";
+} from "../../../Service/StudentService";
 
 import {
   errorNotification,
   successNotification,
-} from "../../Utility/NotificationUtil";
+} from "../../../Utility/NotificationUtil";
 import RegistrationCertificate from "./RegistrationCertificate";
 
 const Student = () => {
@@ -134,6 +134,40 @@ const Student = () => {
       case "GUITAR":
         severity = "danger";
         label = "Guitar";
+        break;
+
+      case "":
+      case null:
+      case undefined:
+        label = "Not Selected";
+        break;
+      default:
+        label = "Not Selected";
+    }
+
+    return <Tag value={label} severity={severity} className="music-tag" />;
+  };
+
+  const modeTemplate = (rowData: any) => {
+    let severity: "success" | "warning" | "info" | "danger" | undefined =
+      "info";
+
+    let label = "Not Selected";
+
+    switch (rowData.mode) {
+      case "HOME":
+        severity = "success";
+        label = "Home";
+        break;
+
+      case "ONLINE":
+        severity = "warning";
+        label = "Online";
+        break;
+
+      case "OFFLINE":
+        severity = "info";
+        label = "Offline";
         break;
 
       case "":
@@ -396,6 +430,16 @@ const Student = () => {
             header="Music"
             sortable
             body={musicTypeTemplate}
+            style={{
+              minWidth: "11rem",
+            }}
+          />
+
+          <Column
+            field="mode"
+            header="Tution Mode"
+            sortable
+            body={modeTemplate}
             style={{
               minWidth: "11rem",
             }}

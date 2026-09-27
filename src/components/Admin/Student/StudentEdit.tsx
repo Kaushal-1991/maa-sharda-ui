@@ -1,12 +1,9 @@
 import React, { useState } from "react";
+import Sidebar from "../Sidebar/Sidebar";
+import Header from "../Header/Header";
 import { Outlet } from "react-router-dom";
 
-import Header from "../components/Admin/Header/Header";
-import Sidebar from "../components/Admin/Sidebar/Sidebar";
-
-import "../components/Admin/Admin.css";
-
-const AdminDashboard: React.FC = () => {
+const StudentEdit = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleMenuClick = () => {
@@ -16,7 +13,6 @@ const AdminDashboard: React.FC = () => {
   const handleSidebarClose = () => {
     setSidebarOpen(false);
   };
-
   return (
     <div className="admin-layout">
       {/* Sidebar */}
@@ -29,6 +25,7 @@ const AdminDashboard: React.FC = () => {
 
         {/* Page Content */}
         <main className="admin-page-content">
+          <h1>Hello</h1>
           <Outlet />
         </main>
       </div>
@@ -36,4 +33,4 @@ const AdminDashboard: React.FC = () => {
   );
 };
 
-export default AdminDashboard;
+export default StudentEdit;

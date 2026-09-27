@@ -1,7 +1,15 @@
-import { Anchor, Button, Container,Paper, Stack, Text, Title } from '@mantine/core';
-import contactImage from '../images/contact-image.jpg';
-import Footer from '../components/Footer/Footer';
-import Header from '../components/Header/Header';
+import {
+  Anchor,
+  Button,
+  Container,
+  Paper,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
+import contactImage from "../../images/contact-image.jpg";
+import Footer from "../../components/Footer/Footer";
+import Header from "../../components/Header/Header";
 
 const Contact = () => {
   return (
@@ -14,11 +22,13 @@ const Contact = () => {
               <Text className="eyebrow">LET&apos;S MAKE SOME MUSIC</Text>
               <Title order={1}>Come say hello.</Title>
               <Text className="contact-hero__lead">
-                Have a question about classes, performances or joining the academy? We would love
-                to hear from you.
+                Have a question about classes, performances or joining the
+                academy? We would love to hear from you.
               </Text>
             </div>
-            <div className="contact-hero__note" aria-hidden="true">♫</div>
+            <div className="contact-hero__note" aria-hidden="true">
+              ♫
+            </div>
           </Container>
         </section>
 
@@ -34,15 +44,20 @@ const Contact = () => {
                   <Text fw={700}>Music brings us together.</Text>
                 </div>
               </div>
-              
             </div>
 
-            <Paper className="contact-connect-card" withBorder shadow="xl" radius="lg" p={{ base: 'lg', sm: 'xl' }}>
+            <Paper
+              className="contact-connect-card"
+              withBorder
+              shadow="xl"
+              radius="lg"
+              p={{ base: "lg", sm: "xl" }}
+            >
               <Text className="form-kicker contact-kicker">CONTACT US</Text>
               <Title order={2}>Let&apos;s connect.</Title>
               <Text className="contact-connect-card__copy" mt="sm">
-                Reach Maa Sharda Sangeet Academy directly about classes, music lessons, Swarum Band
-                performances or your musical journey.
+                Reach Maa Sharda Sangeet Academy directly about classes, music
+                lessons, Swarum Band performances or your musical journey.
               </Text>
               <Stack gap="sm" mt="xl">
                 <div className="contact-action contact-action--static">
@@ -52,7 +67,10 @@ const Contact = () => {
                     Kolpanday, Azamgarh, Uttar Pradesh
                   </span>
                 </div>
-                <Anchor href="mailto:rajtushar276001@gmail.com" className="contact-action">
+                <Anchor
+                  href="mailto:rajtushar276001@gmail.com"
+                  className="contact-action"
+                >
                   <span className="contact-action__icon">✉</span>
                   <span>
                     <small>Email us</small>

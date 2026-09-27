@@ -9,18 +9,18 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import Footer from "../components/Footer/Footer";
-import Header from "../components/Header/Header";
-import maaShardaLogo from "../images/maa-sharda.jpeg";
-import { login } from "../Service/AuthService";
+import Footer from "../../components/Footer/Footer";
+import Header from "../../components/Header/Header";
+import maaShardaLogo from "../../images/maa-sharda.jpeg";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { login } from "../../Service/AuthService";
 import {
   errorNotification,
   successNotification,
-} from "../Utility/NotificationUtil";
-import { jwtDecode } from "jwt-decode";
-import { setJwt } from "../Slice/JwtSlice";
+} from "../../Utility/NotificationUtil";
+import { setJwt } from "../../Slice/JwtSlice";
 
 const LoginPages = () => {
   const dispatch = useDispatch();

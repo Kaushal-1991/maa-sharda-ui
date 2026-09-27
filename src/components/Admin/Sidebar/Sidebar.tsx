@@ -1,13 +1,12 @@
+import React from "react";
+import { Button, Divider, Text } from "@mantine/core";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { removeJwt } from "../../../Slice/JwtSlice";
+import { removeUser } from "../../../Slice/UserSlice";
+import { IconLogout } from "@tabler/icons-react";
 
-import React from 'react';
-import { Button, Divider, Text } from '@mantine/core';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { removeJwt } from '../../Slice/JwtSlice';
-import { removeUser } from '../../Slice/UserSlice';
-import { IconLogout } from '@tabler/icons-react';
-
-import maaShardaLogo from '../../images/maa-sharda.jpeg';
+import maaShardaLogo from "../../../images/maa-sharda.jpeg";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -16,14 +15,14 @@ interface SidebarProps {
 
 const navigation = [
   {
-    label: 'Dashboard',
-    icon: '▦',
-    url: '/admin/dashboard',
+    label: "Dashboard",
+    icon: "▦",
+    url: "/admin/dashboard",
   },
   {
-    label: 'Students',
-    icon: '♙',
-    url: '/admin/students',
+    label: "Students",
+    icon: "♙",
+    url: "/admin/students",
   },
   // {
   //   label: 'Teachers',
@@ -37,11 +36,7 @@ const navigation = [
   // },
 ];
 
-const Sidebar: React.FC<SidebarProps> = ({
-  isOpen,
-  onClose,
-}) => {
-
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -49,23 +44,17 @@ const Sidebar: React.FC<SidebarProps> = ({
     dispatch(removeJwt());
     dispatch(removeUser());
 
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('role');
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("role");
 
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
-    <aside
-      className={`admin-sidebar ${
-        isOpen ? 'sidebar-open' : ''
-      }`}
-    >
-
+    <aside className={`admin-sidebar ${isOpen ? "sidebar-open" : ""}`}>
       {/* Logo */}
       <div className="sidebar-logo">
-
         <img
           src={maaShardaLogo}
           alt="Maa Sharda Academy"
@@ -90,44 +79,29 @@ const Sidebar: React.FC<SidebarProps> = ({
         >
           ×
         </button>
-
       </div>
 
       {/* Navigation */}
       <nav className="sidebar-navigation">
-
         {navigation.map((item) => (
           <NavLink
             key={item.url}
             to={item.url}
             onClick={onClose}
             className={({ isActive }) =>
-              `sidebar-link ${
-                isActive ? 'active' : ''
-              }`
+              `sidebar-link ${isActive ? "active" : ""}`
             }
           >
+            <span className="sidebar-icon">{item.icon}</span>
 
-            <span className="sidebar-icon">
-              {item.icon}
-            </span>
-
-            <span className="sidebar-label">
-              {item.label}
-            </span>
-
+            <span className="sidebar-label">{item.label}</span>
           </NavLink>
         ))}
-
       </nav>
 
       {/* Bottom Logout */}
       <div className="sidebar-bottom">
-
-        <Divider
-          color="rgba(255,255,255,0.12)"
-          mb="md"
-        />
+        <Divider color="rgba(255,255,255,0.12)" mb="md" />
 
         <Button
           fullWidth
@@ -137,12 +111,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         >
           Logout
         </Button>
-
       </div>
-
     </aside>
   );
 };
 
 export default Sidebar;
-

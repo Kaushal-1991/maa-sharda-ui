@@ -1,4 +1,4 @@
-import { Carousel } from '@mantine/carousel';
+import { Carousel } from "@mantine/carousel";
 import {
   Anchor,
   Button,
@@ -8,37 +8,40 @@ import {
   Stack,
   Text,
   Title,
-} from '@mantine/core';
-import { Link } from 'react-router-dom';
-import maaShardaLogo from '../images/maa-sharda.jpeg';
-import aboutImage from '../images/about-image.jpg';
-import Footer from '../components/Footer/Footer';
-import Header from '../components/Header/Header';
+} from "@mantine/core";
+import { Link } from "react-router-dom";
+import maaShardaLogo from "../../images/maa-sharda.jpeg";
+import aboutImage from "../../images/about-image.jpg";
+import Footer from "../../components/Footer/Footer";
+import Header from "../../components/Header/Header";
 
 const instruments = [
   {
-    icon: '🪕',
-    title: 'Classical Music',
-    copy: 'Build a strong foundation in melody, rhythm and expression.',
-    image: 'https://loremflickr.com/900/700/sitar,indian,classical-music',
+    icon: "🪕",
+    title: "Classical Music",
+    copy: "Build a strong foundation in melody, rhythm and expression.",
+    image: "https://loremflickr.com/900/700/sitar,indian,classical-music",
   },
   {
-    icon: '🎙',
-    title: 'Light Music',
-    copy: 'Find your flow through songs that feel effortless and alive.',
-    image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=85',
+    icon: "🎙",
+    title: "Light Music",
+    copy: "Find your flow through songs that feel effortless and alive.",
+    image:
+      "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=85",
   },
   {
-    icon: '🎹',
-    title: 'Harmonium',
-    copy: 'Learn accompaniment, notation and confident stage presence.',
-    image: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=900&q=85',
+    icon: "🎹",
+    title: "Harmonium",
+    copy: "Learn accompaniment, notation and confident stage presence.",
+    image:
+      "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=900&q=85",
   },
   {
-    icon: '🎸',
-    title: 'Guitar',
-    copy: 'Play your favourite songs and turn chords into stories.',
-    image: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=900&q=85',
+    icon: "🎸",
+    title: "Guitar",
+    copy: "Play your favourite songs and turn chords into stories.",
+    image:
+      "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=900&q=85",
   },
 ];
 
@@ -54,14 +57,26 @@ const Home = () => {
                 Let your <em>music</em> take the lead.
               </Title>
               <Text className="hero-description">
-                A warm space to learn, practise and share your musical voice with thoughtful
-                mentors and a like-minded community.
+                A warm space to learn, practise and share your musical voice
+                with thoughtful mentors and a like-minded community.
               </Text>
               <Group mt="xl" gap="sm">
-                <Button component={Link} to="/register" className="hero-button" size="md" radius="md">
+                <Button
+                  component={Link}
+                  to="/register"
+                  className="hero-button"
+                  size="md"
+                  radius="md"
+                >
                   Begin your journey <span aria-hidden="true">→</span>
                 </Button>
-                <Button component="a" href="#classes" variant="subtle" color="dark" size="md">
+                <Button
+                  component="a"
+                  href="#classes"
+                  variant="subtle"
+                  color="dark"
+                  size="md"
+                >
                   Explore classes
                 </Button>
               </Group>
@@ -101,20 +116,23 @@ const Home = () => {
                   className="about-image"
                 />
               </div>
-              <Text className="about-image-note">Rooted in tradition. Open to your sound.</Text>
+              <Text className="about-image-note">
+                Rooted in tradition. Open to your sound.
+              </Text>
             </div>
             <div className="about-copy">
               <Text className="eyebrow">MEET YOUR MUSIC MENTOR</Text>
               <Title order={2}>Learn with Tushar Singh Rajpoot.</Title>
               <Text className="about-description">
-                Tushar Singh Rajpoot is a passionate musician and singer who believes that music
-                becomes meaningful when it is shared. As a dedicated teacher, he guides learners
-                with patience, practical training and a deep respect for every student’s unique
-                voice. At Maa Sharda Sangeet Academy, his aim is to help each learner practise
-                with confidence, understand the beauty of music and enjoy every step of their
-                musical journey.
+                Tushar Singh Rajpoot is a passionate musician and singer who
+                believes that music becomes meaningful when it is shared. As a
+                dedicated teacher, he guides learners with patience, practical
+                training and a deep respect for every student’s unique voice. At
+                Maa Sharda Sangeet Academy, his aim is to help each learner
+                practise with confidence, understand the beauty of music and
+                enjoy every step of their musical journey.
               </Text>
-             
+
               <Anchor component={Link} to="/register" className="about-link">
                 Meet your musical guide <span aria-hidden="true">→</span>
               </Anchor>
@@ -129,12 +147,15 @@ const Home = () => {
                 <Text className="eyebrow">A LITTLE INSPIRATION</Text>
                 <Title order={2}>Make space for your sound.</Title>
               </div>
-              <Text className="section-copy">Small practice sessions become meaningful progress when you enjoy the journey.</Text>
+              <Text className="section-copy">
+                Small practice sessions become meaningful progress when you
+                enjoy the journey.
+              </Text>
             </div>
             <Carousel
               withIndicators
               withControls
-              slideSize={{ base: '100%', sm: '50%', md: '33.333333%' }}
+              slideSize={{ base: "100%", sm: "50%", md: "33.333333%" }}
               slideGap="md"
               className="academy-carousel"
             >
@@ -149,16 +170,26 @@ const Home = () => {
                     }}
                   >
                     <span
-                      className={`card-icon ${instrument.title === 'Classical Music' ? 'card-icon--sitar' : ''}`}
+                      className={`card-icon ${instrument.title === "Classical Music" ? "card-icon--sitar" : ""}`}
                       role="img"
                       aria-label={`${instrument.title} icon`}
                     >
                       {instrument.icon}
                     </span>
-                    <Text className="card-number">0{instruments.indexOf(instrument) + 1}</Text>
+                    <Text className="card-number">
+                      0{instruments.indexOf(instrument) + 1}
+                    </Text>
                     <Title order={3}>{instrument.title}</Title>
-                    <Text size="sm" mt="sm">{instrument.copy}</Text>
-                    <Anchor component={Link} to="/register" className="card-link">Learn more →</Anchor>
+                    <Text size="sm" mt="sm">
+                      {instrument.copy}
+                    </Text>
+                    <Anchor
+                      component={Link}
+                      to="/register"
+                      className="card-link"
+                    >
+                      Learn more →
+                    </Anchor>
                   </Paper>
                 </Carousel.Slide>
               ))}
@@ -171,9 +202,18 @@ const Home = () => {
             <Stack gap={6}>
               <Text className="eyebrow">YOUR NEXT CHAPTER</Text>
               <Title order={2}>The first note is yours.</Title>
-              <Text>Choose an instrument, meet your mentor and make music that feels like you.</Text>
+              <Text>
+                Choose an instrument, meet your mentor and make music that feels
+                like you.
+              </Text>
             </Stack>
-            <Button component={Link} to="/register" className="hero-button" size="md" radius="md">
+            <Button
+              component={Link}
+              to="/register"
+              className="hero-button"
+              size="md"
+              radius="md"
+            >
               Register now <span aria-hidden="true">→</span>
             </Button>
           </Container>
