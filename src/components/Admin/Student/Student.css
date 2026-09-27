@@ -485,3 +485,33 @@
 .student-data-table .p-paginator .p-dropdown-trigger {
     width: 28px !important;
 }
+.mode-tag {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+/* Home */
+.mode-home {
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+/* Online */
+.mode-online {
+  background-color: #dbeafe !important;
+  color: #2563eb !important;
+}
+
+/* Offline */
+.mode-offline {
+  background-color: #fef3c7 !important;
+  color: #b45309 !important;
+}
+
+/* Not Selected */
+.mode-not-selected {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+}

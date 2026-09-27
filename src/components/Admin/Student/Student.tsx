@@ -149,37 +149,38 @@ const Student = () => {
   };
 
   const modeTemplate = (rowData: any) => {
-    let severity: "success" | "warning" | "info" | "danger" | undefined =
-      "info";
-
     let label = "Not Selected";
+    let modeClass = "mode-not-selected";
 
     switch (rowData.mode) {
       case "HOME":
-        severity = "success";
         label = "Home";
+        modeClass = "mode-home";
         break;
 
       case "ONLINE":
-        severity = "warning";
         label = "Online";
+        modeClass = "mode-online";
         break;
 
       case "OFFLINE":
-        severity = "info";
         label = "Offline";
+        modeClass = "mode-offline";
         break;
 
       case "":
       case null:
       case undefined:
         label = "Not Selected";
+        modeClass = "mode-not-selected";
         break;
+
       default:
         label = "Not Selected";
+        modeClass = "mode-not-selected";
     }
 
-    return <Tag value={label} severity={severity} className="music-tag" />;
+    return <Tag value={label} className={`mode-tag ${modeClass}`} />;
   };
 
   // =========================
