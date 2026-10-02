@@ -11,6 +11,12 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import {
+  IconGuitarPick,
+  IconMicrophone,
+  IconMusic,
+  IconPiano,
+} from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import classHeroImage from "../../images/class-1.jpg";
 import classTwoImage from "../../images/class-2.jpg";
@@ -22,25 +28,25 @@ import Footer from "../../components/Footer/Footer";
 const classOptions = [
   {
     number: "01",
-    icon: "♬",
+    icon: IconMusic,
     title: "Classical Music",
     copy: "Learn sur, taal, rhythm and expression through a patient classical foundation.",
   },
   {
     number: "02",
-    icon: "♫",
+    icon: IconMicrophone,
     title: "Light Music & Singing",
     copy: "Develop your voice, confidence and feeling through songs you love to perform.",
   },
   {
     number: "03",
-    icon: "🎹",
+    icon: IconPiano,
     title: "Harmonium",
     copy: "Understand accompaniment, chords and melody while supporting every performance.",
   },
   {
     number: "04",
-    icon: "🎸",
+    icon: IconGuitarPick,
     title: "Guitar",
     copy: "Start with chords and rhythm, then grow into expressive song-based playing.",
   },
@@ -177,8 +183,8 @@ const Classes = () => {
                   radius="lg"
                 >
                   <div className="class-detail-card__top">
-                    <span className="class-detail-card__icon">
-                      {musicClass.icon}
+                    <span className="class-detail-card__icon" aria-hidden="true">
+                      <musicClass.icon size={36} stroke={1.6} />
                     </span>
                     <Text className="class-detail-card__number">
                       {musicClass.number}

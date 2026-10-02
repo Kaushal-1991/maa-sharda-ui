@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Divider, Text } from "@mantine/core";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { removeJwt } from "../../../Slice/JwtSlice";
 import { removeUser } from "../../../Slice/UserSlice";
-import { IconLogout } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconLogout,
+  IconPhoto,
+  IconVideo,
+} from "@tabler/icons-react";
 
 import maaShardaLogo from "../../../images/maa-sharda.jpeg";
 
@@ -39,6 +44,16 @@ const navigation = [
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [galleryExpanded, setGalleryExpanded] = useState(
+    location.pathname.startsWith("/admin/gallery"),
+  );
+
+  useEffect(() => {
+    if (location.pathname.startsWith("/admin/gallery")) {
+      setGalleryExpanded(true);
+    }
+  }, [location.pathname]);
 
   const handleLogout = () => {
     dispatch(removeJwt());
@@ -97,6 +112,45 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             <span className="sidebar-label">{item.label}</span>
           </NavLink>
         ))}
+        <button
+          type="button"
+          className={`sidebar-link sidebar-gallery-toggle ${
+            location.pathname.startsWith("/admin/gallery") ? "active" : ""
+          }`}
+          aria-expanded={galleryExpanded}
+          onClick={() => setGalleryExpanded((expanded) => !expanded)}
+        >
+          <span className="sidebar-icon sidebar-icon--gallery"><IconPhoto size={19} /></span>
+          <span className="sidebar-label">Gallery</span>
+          <IconChevronDown
+            size={16}
+            className={`sidebar-gallery-chevron ${galleryExpanded ? "expanded" : ""}`}
+          />
+        </button>
+        {galleryExpanded && (
+          <div className="sidebar-gallery-submenu">
+            <NavLink
+              to="/admin/gallery/photos"
+              onClick={onClose}
+              className={({ isActive }) =>
+                `sidebar-link sidebar-gallery-sub-link ${isActive ? "active" : ""}`
+              }
+            >
+              <span className="sidebar-icon sidebar-icon--photos"><IconPhoto size={17} /></span>
+              <span className="sidebar-label">Photos</span>
+            </NavLink>
+            <NavLink
+              to="/admin/gallery/videos"
+              onClick={onClose}
+              className={({ isActive }) =>
+                `sidebar-link sidebar-gallery-sub-link ${isActive ? "active" : ""}`
+              }
+            >
+              <span className="sidebar-icon sidebar-icon--videos"><IconVideo size={17} /></span>
+              <span className="sidebar-label">Videos</span>
+            </NavLink>
+          </div>
+        )}
       </nav>
 
       {/* Bottom Logout */}

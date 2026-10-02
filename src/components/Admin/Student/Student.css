@@ -56,8 +56,8 @@
     align-items: center;
     justify-content: center;
     border-radius: 9px;
-    background: #eef4ff;
-    color: #3b82f6;
+    background: #fff1eb;
+    color: #9f1239;
 }
 
 .student-title {
@@ -88,7 +88,7 @@
     left: 11px;
     top: 50%;
     transform: translateY(-50%);
-    color: #8b95a7;
+    color: #b7791f;
     z-index: 2;
 }
 
@@ -270,6 +270,7 @@
 
 .student-action-btn {
     border-radius: 7px !important;
+    color: #9f1239;
 
     transition:
         transform 0.15s ease,

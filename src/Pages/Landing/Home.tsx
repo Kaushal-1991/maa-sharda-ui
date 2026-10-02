@@ -10,6 +10,12 @@ import {
   Title,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
+import {
+  IconGuitarPick,
+  IconMicrophone,
+  IconMusic,
+  IconPiano,
+} from "@tabler/icons-react";
 import maaShardaLogo from "../../images/maa-sharda.jpeg";
 import aboutImage from "../../images/about-image.jpg";
 import Footer from "../../components/Footer/Footer";
@@ -17,27 +23,27 @@ import Header from "../../components/Header/Header";
 
 const instruments = [
   {
-    icon: "🪕",
+    icon: IconMusic,
     title: "Classical Music",
     copy: "Build a strong foundation in melody, rhythm and expression.",
     image: "https://loremflickr.com/900/700/sitar,indian,classical-music",
   },
   {
-    icon: "🎙",
+    icon: IconMicrophone,
     title: "Light Music",
     copy: "Find your flow through songs that feel effortless and alive.",
     image:
       "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=900&q=85",
   },
   {
-    icon: "🎹",
+    icon: IconPiano,
     title: "Harmonium",
     copy: "Learn accompaniment, notation and confident stage presence.",
     image:
       "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=900&q=85",
   },
   {
-    icon: "🎸",
+    icon: IconGuitarPick,
     title: "Guitar",
     copy: "Play your favourite songs and turn chords into stories.",
     image:
@@ -159,40 +165,37 @@ const Home = () => {
               slideGap="md"
               className="academy-carousel"
             >
-              {instruments.map((instrument) => (
-                <Carousel.Slide key={instrument.title}>
-                  <Paper
-                    className="inspiration-card"
-                    p="xl"
-                    radius="lg"
-                    style={{
-                      backgroundImage: `linear-gradient(145deg, rgba(74, 29, 29, 0.92), rgba(159, 18, 57, 0.62)), url(${instrument.image})`,
-                    }}
-                  >
-                    <span
-                      className={`card-icon ${instrument.title === "Classical Music" ? "card-icon--sitar" : ""}`}
-                      role="img"
-                      aria-label={`${instrument.title} icon`}
+              {instruments.map((instrument, index) => {
+                const InstrumentIcon = instrument.icon;
+                return (
+                  <Carousel.Slide key={instrument.title}>
+                    <Paper
+                      className="inspiration-card"
+                      p="xl"
+                      radius="lg"
+                      style={{
+                        backgroundImage: `linear-gradient(145deg, rgba(74, 29, 29, 0.92), rgba(159, 18, 57, 0.62)), url(${instrument.image})`,
+                      }}
                     >
-                      {instrument.icon}
-                    </span>
-                    <Text className="card-number">
-                      0{instruments.indexOf(instrument) + 1}
-                    </Text>
-                    <Title order={3}>{instrument.title}</Title>
-                    <Text size="sm" mt="sm">
-                      {instrument.copy}
-                    </Text>
-                    <Anchor
-                      component={Link}
-                      to="/register"
-                      className="card-link"
-                    >
-                      Learn more →
-                    </Anchor>
-                  </Paper>
-                </Carousel.Slide>
-              ))}
+                      <span className="card-icon" aria-hidden="true">
+                        <InstrumentIcon size={42} stroke={1.6} />
+                      </span>
+                      <Text className="card-number">0{index + 1}</Text>
+                      <Title order={3}>{instrument.title}</Title>
+                      <Text size="sm" mt="sm">
+                        {instrument.copy}
+                      </Text>
+                      <Anchor
+                        component={Link}
+                        to="/register"
+                        className="card-link"
+                      >
+                        Learn more →
+                      </Anchor>
+                    </Paper>
+                  </Carousel.Slide>
+                );
+              })}
             </Carousel>
           </Container>
         </section>
