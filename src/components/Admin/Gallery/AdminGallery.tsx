@@ -29,7 +29,6 @@ import {
   saveGalleryMedia,
 } from "../../../Service/GalleryMediaService";
 import {
-  errorNotification,
   successNotification,
 } from "../../../Utility/NotificationUtil";
 
@@ -57,6 +56,9 @@ const AdminGallery = ({ mediaType }: AdminGalleryProps) => {
     : ["events", "classes", "album"];
   const activeCategory =
     isPhotos && category === "album" ? "events" : category;
+  const visibleMedia = media.filter(
+    (record) => record.type === mediaType && record.category === activeCategory,
+  );
   const uploadAccept = isPhotos ? "image/*" : "video/*";
   const mediaLabel = isPhotos ? "photos" : "videos";
   const mediaIcon = isPhotos ? (
@@ -72,14 +74,23 @@ const AdminGallery = ({ mediaType }: AdminGalleryProps) => {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    setMedia([]);
 
     getGalleryMedia(mediaType, activeCategory)
       .then((records) => {
-        if (!cancelled) setMedia(records);
-      })
-      .catch((error: Error) => {
         if (!cancelled) {
-          errorNotification(error.message || "Could not load gallery uploads.");
+          setMedia(
+            records.filter(
+              (record) =>
+                record.type === mediaType && record.category === activeCategory,
+            ),
+          );
+        }
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) {
+          setMedia([]);
+          console.error("Could not load gallery uploads.", error);
         }
       })
       .finally(() => {
@@ -92,12 +103,17 @@ const AdminGallery = ({ mediaType }: AdminGalleryProps) => {
   }, [activeCategory, mediaType]);
 
   useEffect(() => {
-    const urls = media.map((record) => ({
-      id: record.id,
-      url: URL.createObjectURL(record.file),
-    }));
+    const objectUrls: string[] = [];
+    const urls = media.flatMap((record) => {
+      if (record.videoUrl) return [{ id: record.id, url: record.videoUrl }];
+      if (!record.file) return [];
+
+      const url = URL.createObjectURL(record.file);
+      objectUrls.push(url);
+      return [{ id: record.id, url }];
+    });
     setMediaUrls(urls);
-    return () => urls.forEach(({ url }) => URL.revokeObjectURL(url));
+    return () => objectUrls.forEach((url) => URL.revokeObjectURL(url));
   }, [media]);
 
   const handleUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -109,7 +125,10 @@ const AdminGallery = ({ mediaType }: AdminGalleryProps) => {
       (file) => !file.type.startsWith(isPhotos ? "image/" : "video/"),
     );
     if (hasInvalidFile) {
-      errorNotification(`Select ${isPhotos ? "image" : "video"} files only.`);
+      return;
+    }
+
+    if (!isPhotos && files.some((file) => file.size > 30 * 1024 * 1024)) {
       return;
     }
 
@@ -122,12 +141,10 @@ const AdminGallery = ({ mediaType }: AdminGalleryProps) => {
         ),
       );
       successNotification(
-        `${savedRecords.length} ${mediaLabel} saved in this browser.`,
+        `${savedRecords.length} ${mediaLabel} uploaded successfully.`,
       );
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Could not save gallery files.";
-      errorNotification(`${message} Check this browser's available storage.`);
+    } catch (error: unknown) {
+      console.error("Could not upload gallery files.", error);
     } finally {
       setSaving(false);
     }
@@ -136,13 +153,11 @@ const AdminGallery = ({ mediaType }: AdminGalleryProps) => {
   const handleDelete = async (record: GalleryMediaRecord) => {
     setRemovingId(record.id);
     try {
-      await deleteGalleryMedia(record.id);
+      await deleteGalleryMedia(record.id, mediaType);
       setMedia((current) => current.filter((item) => item.id !== record.id));
       successNotification("Gallery file removed.");
-    } catch (error) {
-      errorNotification(
-        error instanceof Error ? error.message : "Could not remove gallery file.",
-      );
+    } catch (error: unknown) {
+      console.error("Could not remove gallery file.", error);
     } finally {
       setRemovingId(null);
     }
@@ -165,7 +180,7 @@ const AdminGallery = ({ mediaType }: AdminGalleryProps) => {
             </div>
           </Group>
           <Badge color="yellow" variant="light" size="lg">
-            Stored in this browser
+            {isPhotos ? "Stored in this browser" : "Stored in cloud gallery"}
           </Badge>
         </Group>
 
@@ -206,8 +221,10 @@ const AdminGallery = ({ mediaType }: AdminGalleryProps) => {
             <div>
               <Title order={3}>Add {categoryLabels[activeCategory].toLowerCase()} {mediaLabel}</Title>
               <Text c="dimmed" size="sm" mt={6}>
-                Choose one or more {mediaLabel}. Uploads stay in this browser
-                and appear in its public gallery.
+                Choose one or more {mediaLabel}.
+                {isPhotos
+                  ? " Uploads stay in this browser and appear in its public gallery."
+                  : " Videos must be 30 MB or smaller and will appear in the public gallery."}
               </Text>
             </div>
             <Button
@@ -233,13 +250,13 @@ const AdminGallery = ({ mediaType }: AdminGalleryProps) => {
         <Group justify="space-between" align="center">
           <Title order={3}>{categoryLabels[activeCategory]} {mediaLabel}</Title>
           <Text size="sm" c="dimmed">
-            {media.length} {media.length === 1 ? "file" : "files"}
+            {visibleMedia.length} {visibleMedia.length === 1 ? "file" : "files"}
           </Text>
         </Group>
 
         {loading ? (
           <Text c="dimmed">Loading uploaded files…</Text>
-        ) : media.length === 0 ? (
+        ) : visibleMedia.length === 0 ? (
           <Card className="admin-gallery-empty" withBorder radius="lg" p="xl">
             {isPhotos ? (
               <IconPhoto size={28} color="#9f1239" />
@@ -250,7 +267,7 @@ const AdminGallery = ({ mediaType }: AdminGalleryProps) => {
           </Card>
         ) : (
           <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }} spacing="md">
-            {media.map((record) => {
+            {visibleMedia.map((record) => {
               const url = mediaUrls.find((item) => item.id === record.id)?.url;
               return (
                 <Card

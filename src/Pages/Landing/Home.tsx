@@ -20,6 +20,9 @@ import maaShardaLogo from "../../images/maa-sharda.jpeg";
 import aboutImage from "../../images/about-image.jpg";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
+import useGalleryVideos from "../../hooks/useGalleryVideos";
+
+const homeVideoCategories = ["events", "classes", "album"] as const;
 
 const instruments = [
   {
@@ -52,6 +55,8 @@ const instruments = [
 ];
 
 const Home = () => {
+  const galleryVideos = useGalleryVideos([...homeVideoCategories]);
+
   return (
     <div className="home-page">
       <Header />
@@ -199,6 +204,37 @@ const Home = () => {
             </Carousel>
           </Container>
         </section>
+
+        {galleryVideos.length > 0 && (
+          <section className="carousel-section home-gallery-videos">
+            <Container size="lg">
+              <div className="section-heading">
+                <div>
+                  <Text className="eyebrow">FROM THE ACADEMY</Text>
+                  <Title order={2}>Music, moments and performances.</Title>
+                </div>
+                <Anchor component={Link} to="/gallery/videos" className="about-link">
+                  Explore all videos <span aria-hidden="true">→</span>
+                </Anchor>
+              </div>
+              <div className="gallery-video-grid">
+                {galleryVideos.slice(0, 4).map((video) => (
+                  <figure className="gallery-video-card" key={video.id}>
+                    <video
+                      src={video.videoUrl}
+                      controls
+                      preload="metadata"
+                      aria-label={video.name}
+                    />
+                    <figcaption className="gallery-video-title">
+                      {video.name}
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </Container>
+          </section>
+        )}
 
         <section className="home-cta" id="classes">
           <Container size="lg" className="cta-inner">

@@ -2596,6 +2596,15 @@ img {
   border: 0;
 }
 
+.classes-video-frame video,
+.events-video-frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #1b1112;
+}
+
 .youtube-video-carousel {
   min-width: 0;
 }

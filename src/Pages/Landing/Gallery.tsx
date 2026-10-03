@@ -27,7 +27,6 @@ import {
   GalleryMediaRecord,
   getGalleryMedia,
 } from "../../Service/GalleryMediaService";
-import { errorNotification } from "../../Utility/NotificationUtil";
 
 type GalleryMediaType = "photos" | "videos";
 
@@ -51,32 +50,6 @@ const classPhotos = [
 ];
 
 
-const albumVideos = [
-  { src: "/videos/album-1.mp4", label: "Album video 1" },
-  { src: "/videos/album-2.mp4", label: "Album video 2" },
-  { src: "/videos/album-4.mp4", label: "Album video 4" },
-  { src: "/videos/album-5.mp4", label: "Album video 5" },
-  { src: "/videos/album-7.mp4", label: "Album video 7" },
-];
-
-const eventVideos = [
-  { src: "/videos/event-1.mp4", label: "Event video 1" },
-  { src: "/videos/event-2.mp4", label: "Event video 2" },
-  { src: "/videos/event-3.mp4", label: "Event video 3" },
-  { src: "/videos/event-4.mp4", label: "Event video 4" },
-  { src: "/videos/event-6.mp4", label: "Event video 6" },
-  { src: "/videos/event-7.mp4", label: "Event video 7" },
-  { src: "/videos/evevnt-8.mp4", label: "Event video 8" },
-  { src: "/videos/event-9.mp4", label: "Event video 9" },
-];
-
-const classVideos = [
-  { src: "/videos/class-5.mp4", label: "Class video 5" },
-  { src: "/videos/class-7.mp4", label: "Class video 7" },
-  { src: "/videos/class-8.mp4", label: "Class video 8" },
-  { src: "/videos/class-9.mp4", label: "Class video 9" },
-  { src: "/videos/classs-5.mp4", label: "Class session video" },
-];
 const GalleryVideo = ({ src, label, category }: { src: string; label: string; category: GalleryCategory }) => {
   const fallbackPoster = category === "album" ? albumCoverImage : category === "classes" ? classOneImage : eventOneImage;
   const [poster, setPoster] = useState<string>();
@@ -122,25 +95,29 @@ const Gallery = ({ mediaType }: GalleryProps) => {
   const [activeTab, setActiveTab] = useState<string | null>("events");
   const activeCategory: GalleryCategory =
     activeTab === "classes" || activeTab === "album" ? activeTab : "events";
-  const currentStaticVideos = activeCategory === "album" ? albumVideos : activeCategory === "classes" ? classVideos : eventVideos;
   const [selectedPhoto, setSelectedPhoto] = useState<
     (typeof eventPhotos)[number] | null
   >(null);
   const [uploadedMedia, setUploadedMedia] = useState<
     { record: GalleryMediaRecord; url: string }[]
   >([]);
+  const [loadingMedia, setLoadingMedia] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     let objectUrls: string[] = [];
     setUploadedMedia([]);
+    setLoadingMedia(true);
 
     getGalleryMedia(mediaType, activeCategory)
       .then((records) => {
-        const entries = records.map((record) => {
+        const entries = records.flatMap((record) => {
+          if (record.videoUrl) return [{ record, url: record.videoUrl }];
+          if (!record.file) return [];
+
           const url = URL.createObjectURL(record.file);
           objectUrls.push(url);
-          return { record, url };
+          return [{ record, url }];
         });
 
         if (cancelled) {
@@ -149,10 +126,13 @@ const Gallery = ({ mediaType }: GalleryProps) => {
           setUploadedMedia(entries);
         }
       })
-      .catch((error: Error) => {
+      .catch((error: unknown) => {
         if (!cancelled) {
-          errorNotification(error.message || "Could not load gallery media.");
+          console.error("Could not load gallery media.", error);
         }
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingMedia(false);
       });
 
     return () => {
@@ -186,13 +166,10 @@ const Gallery = ({ mediaType }: GalleryProps) => {
   );
 
   const renderVideos = () =>
-    uploadedMedia.length > 0 || currentStaticVideos.length > 0 ? (
+    loadingMedia ? (
+      <Text c="dimmed">Loading videos…</Text>
+    ) : uploadedMedia.length > 0 ? (
       <div className="gallery-video-grid">
-        {currentStaticVideos.map((video) => (
-          <figure className="gallery-video-card" key={video.src}>
-            <GalleryVideo src={video.src} label={video.label} category={activeCategory} />
-          </figure>
-        ))}
         {uploadedMedia.map(({ record, url }) => (
           <figure className="gallery-video-card" key={record.id}>
             <GalleryVideo src={url} label={record.name} category={record.category} />

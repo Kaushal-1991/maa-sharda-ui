@@ -18,6 +18,7 @@ import eventFourImage from "../../images/event-4.jpg";
 import eventFiveImage from "../../images/event-5.jpg";
 import Footer from "../../components/Footer/Footer";
 import Header from "../../components/Header/Header";
+import useGalleryVideos from "../../hooks/useGalleryVideos";
 
 const events = [
   {
@@ -56,6 +57,8 @@ const swarumYoutubeUrl =
   "https://www.youtube.com/results?search_query=swarum+band";
 
 const Events = () => {
+  const galleryVideos = useGalleryVideos(["events"]);
+
   return (
     <div className="events-page">
       <Header />
@@ -193,7 +196,21 @@ const Events = () => {
               slideSize="100%"
               className="events-video-carousel"
             >
-              {youtubeVideos.map((video) => (
+              {galleryVideos.length > 0
+                ? galleryVideos.map((video) => (
+                    <Carousel.Slide key={video.id}>
+                      <div className="events-video-frame">
+                        <video
+                          src={video.videoUrl}
+                          controls
+                          preload="metadata"
+                          aria-label={video.name}
+                        />
+                      </div>
+                      <Text className="events-video-title">{video.name}</Text>
+                    </Carousel.Slide>
+                  ))
+                : youtubeVideos.map((video) => (
                 <Carousel.Slide key={video.id}>
                   <div className="events-video-frame">
                     <iframe
@@ -205,7 +222,7 @@ const Events = () => {
                   </div>
                   <Text className="events-video-title">{video.title}</Text>
                 </Carousel.Slide>
-              ))}
+                  ))}
             </Carousel>
           </Container>
         </section>

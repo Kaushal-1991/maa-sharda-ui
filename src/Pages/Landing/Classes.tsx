@@ -24,6 +24,7 @@ import classThreeImage from "../../images/class-3.jpg";
 import classFourImage from "../../images/class-4.jpg";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
+import useGalleryVideos from "../../hooks/useGalleryVideos";
 
 const classOptions = [
   {
@@ -71,6 +72,7 @@ type YoutubeVideo = {
 };
 
 const Classes = () => {
+  const galleryVideos = useGalleryVideos(["classes"]);
   const [youtubeVideos, setYoutubeVideos] = useState<YoutubeVideo[]>([
     { id: demoYoutubeVideoId, title: "Demo music video" },
   ]);
@@ -227,7 +229,21 @@ const Classes = () => {
               slideSize="100%"
               className="youtube-video-carousel"
             >
-              {featuredVideos.map((video) => (
+              {galleryVideos.length > 0
+                ? galleryVideos.slice(0, 4).map((video) => (
+                    <Carousel.Slide key={video.id}>
+                      <div className="classes-video-frame">
+                        <video
+                          src={video.videoUrl}
+                          controls
+                          preload="metadata"
+                          aria-label={video.name}
+                        />
+                      </div>
+                      <Text className="youtube-video-title">{video.name}</Text>
+                    </Carousel.Slide>
+                  ))
+                : featuredVideos.map((video) => (
                 <Carousel.Slide key={video.id}>
                   <div className="classes-video-frame">
                     <iframe
@@ -239,7 +255,7 @@ const Classes = () => {
                   </div>
                   <Text className="youtube-video-title">{video.title}</Text>
                 </Carousel.Slide>
-              ))}
+                  ))}
             </Carousel>
           </Container>
         </section>

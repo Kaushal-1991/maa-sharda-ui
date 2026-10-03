@@ -1,3 +1,5 @@
+import axiosInstance from "../Interceptor/AxioxInterceptor";
+
 export type GalleryMediaType = "photos" | "videos";
 export type GalleryCategory = "events" | "classes" | "album";
 
@@ -6,13 +8,35 @@ export interface GalleryMediaRecord {
   type: GalleryMediaType;
   category: GalleryCategory;
   name: string;
-  file: Blob;
+  file?: Blob;
+  videoUrl?: string;
   createdAt: number;
+}
+
+interface VideoResponse {
+  id: number;
+  title: string | null;
+  videoType: "EVENT" | "ALBUM" | "CLASS";
+  videoUrl: string;
+  originalFileName: string;
+  createdAt: string;
 }
 
 const DATABASE_NAME = "maa-sharda-gallery";
 const STORE_NAME = "media";
 const DATABASE_VERSION = 1;
+
+const videoTypeByCategory: Record<GalleryCategory, VideoResponse["videoType"]> = {
+  events: "EVENT",
+  album: "ALBUM",
+  classes: "CLASS",
+};
+
+const categoryByVideoType: Record<VideoResponse["videoType"], GalleryCategory> = {
+  EVENT: "events",
+  ALBUM: "album",
+  CLASS: "classes",
+};
 
 let databasePromise: Promise<IDBDatabase> | null = null;
 
@@ -55,7 +79,39 @@ const openDatabase = (): Promise<IDBDatabase> => {
   return databasePromise;
 };
 
-export const saveGalleryMedia = async (
+const mapVideoResponse = (video: VideoResponse): GalleryMediaRecord => {
+  if (!video || typeof video !== "object") {
+    throw new Error("The video API returned an invalid video record.");
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(categoryByVideoType, video.videoType)) {
+    throw new Error("The video API returned an unsupported video type.");
+  }
+
+  if (video.id === null || video.id === undefined) {
+    throw new Error("The video API response is missing a video ID.");
+  }
+
+  if (typeof video.videoUrl !== "string" || video.videoUrl.trim() === "") {
+    throw new Error("The video API response is missing the video URL.");
+  }
+
+  const createdAt = new Date(video.createdAt).getTime();
+  if (!Number.isFinite(createdAt)) {
+    throw new Error("The video API response has an invalid creation date.");
+  }
+
+  return {
+    id: String(video.id),
+    type: "videos",
+    category: categoryByVideoType[video.videoType],
+    name: video.originalFileName || video.title || `Video ${video.id}`,
+    videoUrl: video.videoUrl,
+    createdAt,
+  };
+};
+
+const saveBrowserMedia = async (
   files: File[],
   type: GalleryMediaType,
   category: GalleryCategory,
@@ -83,10 +139,51 @@ export const saveGalleryMedia = async (
   });
 };
 
+export const saveGalleryMedia = async (
+  files: File[],
+  type: GalleryMediaType,
+  category: GalleryCategory,
+): Promise<GalleryMediaRecord[]> => {
+  if (type === "photos") {
+    return saveBrowserMedia(files, type, category);
+  }
+
+  const videos = await Promise.all(
+    files.map(async (file) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("videoType", videoTypeByCategory[category]);
+      const response = await axiosInstance.post<VideoResponse>(
+        "/api/videos/upload",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } },
+      );
+      return mapVideoResponse(response.data);
+    }),
+  );
+
+  return videos.sort((first, second) => second.createdAt - first.createdAt);
+};
+
 export const getGalleryMedia = async (
   type: GalleryMediaType,
   category: GalleryCategory,
 ): Promise<GalleryMediaRecord[]> => {
+  if (type === "videos") {
+    const response = await axiosInstance.get<VideoResponse[]>(
+      `/api/videos/type/${videoTypeByCategory[category]}`,
+    );
+
+    if (!Array.isArray(response.data)) {
+      throw new Error("The video gallery response was not a list.");
+    }
+
+    return response.data
+      .map(mapVideoResponse)
+      .filter((video) => video.category === category)
+      .sort((first, second) => second.createdAt - first.createdAt);
+  }
+
   const database = await openDatabase();
 
   return new Promise((resolve, reject) => {
@@ -104,7 +201,15 @@ export const getGalleryMedia = async (
   });
 };
 
-export const deleteGalleryMedia = async (id: string): Promise<void> => {
+export const deleteGalleryMedia = async (
+  id: string,
+  type: GalleryMediaType,
+): Promise<void> => {
+  if (type === "videos") {
+    await axiosInstance.delete(`/api/videos/delete/${id}`);
+    return;
+  }
+
   const database = await openDatabase();
 
   return new Promise((resolve, reject) => {
