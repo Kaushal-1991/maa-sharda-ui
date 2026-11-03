@@ -1,46 +1,54 @@
-# Getting Started with Create React App
+# Maa Sharda Sangeet Academy
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The public website and admin portal use Next.js App Router, MongoDB Atlas, and Mongoose.
 
-## Available Scripts
+## Local setup
 
-In the project directory, you can run:
+Use Node.js 20.9.0 or later, as required by Next.js 16.
 
-### `npm start`
+1. Install dependencies with `npm install`.
+2. Copy `.env.example` to `.env.local`.
+3. In MongoDB Atlas, create a database user with a strong password and allow the
+   development machine's IP in Network Access. Keep the database user password
+   private; URL-encode special characters when placing it in a MongoDB URI.
+4. Configure separate server-only Atlas URIs:
+   - `MONGO_URI_DEV` in local `.env.local`, pointing to `maa-sharada-db-dev`.
+   - `MONGO_URI_PROD` in your production hosting provider's environment settings,
+     pointing to `maa-sharada-db-prod`. Do not put production credentials in a
+     local development env file.
+   Use the format
+   `mongodb+srv://<db_user>:<url_encoded_password>@<cluster-host>/<database>?retryWrites=true&w=majority`.
+   Never prefix these variables with `NEXT_PUBLIC_`. The app selects the
+   development or production URI based on `NODE_ENV` and validates its database
+   name, preventing accidental writes to the other database.
+5. Set `ADMIN_EMAIL` to `tushar@gmail.com` (or your preferred admin email).
+6. For local development only, you may set a new private `ADMIN_PASSWORD` in
+   `.env.local`. Do not reuse the password shared in chat. Production ignores
+   plaintext `ADMIN_PASSWORD` and requires a salted hash in `ADMIN_PASSWORD_HASH`;
+   create one with `node scripts/create-admin-hash.mjs`. When putting the hash
+   in `.env.local`, escape each `$` separator as `\$` so Next.js does not treat
+   it as environment-variable interpolation. Hosting-provider environment
+   settings should use the unescaped hash.
+7. Set a private signing secret of at least 32 characters as `AUTH_SECRET`.
+   The local `.env.local` scaffold contains a randomly generated value.
+8. Start the development server with `npm run dev`.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Use `npm run typecheck` to check TypeScript and `npm test` to run the validation
+schema tests. `npm run build` creates the production build; `npm start` serves
+that build. For local development, use `npm run dev`.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Never commit `.env.local` or share its contents. If a database credential is
+shared accidentally, rotate it in Atlas immediately and update the local
+environment value.
 
-### `npm test`
+## Admin portal
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Sign in at `/admin/login`.
+- The authenticated dashboard and management pages are under `/admin/`.
+- Student registrations submitted from `/registration` are stored in MongoDB
+  and listed at `/admin/students`.
+- Manage photos and videos at `/admin/gallery/photos` and
+  `/admin/gallery/videos`. A photo upload accepts up to five files; a video
+  upload accepts one file per submission.
+- Public gallery pages read their media from MongoDB GridFS. The home page shows
+  up to the seven most recently uploaded photos.

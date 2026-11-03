@@ -5,11 +5,20 @@
 /.pnp
 .pnp.js
 
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+
 # testing
 /coverage
 
 # production
 /build
+/.next
+/out
+/tsconfig.tsbuildinfo
 
 # misc
 .DS_Store
