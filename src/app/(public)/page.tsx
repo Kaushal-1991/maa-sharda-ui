@@ -65,7 +65,7 @@ export default function HomePage() {
             <span className="academy-story__spark academy-story__spark--one" aria-hidden="true">✦</span>
             <span className="academy-story__spark academy-story__spark--two" aria-hidden="true">♪</span>
           </div>
-          <div className="content-copy">
+          <div className="content-copy academy-story__card">
             <p className="eyebrow academy-story__eyebrow">A little about us</p>
             <h2>
               Find your voice.
@@ -74,16 +74,10 @@ export default function HomePage() {
             <div className="academy-story__rule" aria-hidden="true">
               <span>♪</span>
             </div>
-            <p>
-              Maa Sharda Sangeet Academy is a welcoming music learning space
-              built around patience, creativity and steady progress. Guided by a
-              commitment to personal attention, the academy supports students as
-              they strengthen their voice, rhythm and technique.
-            </p>
-            <p>
-              Whether a learner is beginning with foundational notes or refining
-              their performance, the academy creates a comfortable and uplifting
-              environment for every stage of musical growth.
+            <p className="academy-story__description">
+              Explore singing, classical and light music, harmonium, or guitar
+              with patient, personal guidance. Students build confidence, voice,
+              rhythm, and technique at a pace that feels right for them.
             </p>
             <div className="academy-story__highlights" aria-label="Academy highlights">
               <span><i aria-hidden="true">✦</i> Personal guidance</span>
