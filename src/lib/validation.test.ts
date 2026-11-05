@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   adminStudentUpdateSchema,
+  academyReviewSchema,
+  reviewModerationSchema,
+  publicReviewQuerySchema,
   contactMessageSchema,
   studentRegistrationSchema,
 } from "./validation";
@@ -53,5 +56,42 @@ describe("request validation", () => {
     });
 
     expect(result.success).toBe(false);
+  });
+
+  it("validates and normalizes academy reviews", () => {
+    const result = academyReviewSchema.parse({
+      name: "  Ananya Sharma ",
+      course: " Guitar ",
+      rating: "5",
+      message: "I really enjoy learning here.",
+    });
+
+    expect(result.name).toBe("Ananya Sharma");
+    expect(result.course).toBe("Guitar");
+    expect(result.rating).toBe(5);
+  });
+
+  it("rejects ratings outside the five-star range", () => {
+    const result = academyReviewSchema.safeParse({
+      name: "Ananya Sharma",
+      course: "Guitar",
+      rating: 6,
+      message: "I really enjoy learning here.",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("only allows admin moderation to approve or reject reviews", () => {
+    expect(reviewModerationSchema.parse({ status: "APPROVED" }).status).toBe("APPROVED");
+    expect(reviewModerationSchema.safeParse({ status: "PENDING" }).success).toBe(false);
+  });
+
+  it("limits public review pages to ten entries", () => {
+    expect(publicReviewQuerySchema.parse({ page: "2", limit: "10" })).toEqual({
+      page: 2,
+      limit: 10,
+    });
+    expect(publicReviewQuerySchema.safeParse({ page: "0", limit: "11" }).success).toBe(false);
   });
 });

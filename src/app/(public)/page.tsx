@@ -4,6 +4,7 @@ import Link from "next/link";
 import { defaultClasses } from "../../data/classes";
 import HeroCarousel from "../../components/next/HeroCarousel";
 import RecentGalleryPhotos from "../../components/next/RecentGalleryPhotos";
+import ReviewsSection from "../../components/next/ReviewsSection";
 import guitaristImage from "../../images/about-image.jpg";
 
 const classSymbols: Record<string, string> = {
@@ -125,6 +126,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      <ReviewsSection />
       <RecentGalleryPhotos />
 
       <section className="closing-invitation" aria-labelledby="closing-invitation-title">

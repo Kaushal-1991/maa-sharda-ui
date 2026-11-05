@@ -10,6 +10,7 @@ const links = [
   { href: "/classes", label: "Classes" },
   { href: "/gallery/photos", label: "Gallery" },
   { href: "/contact", label: "Contact" },
+  { href: "/reviews", label: "Reviews & ratings" },
 ];
 
 export default function SiteHeader() {
@@ -70,29 +71,35 @@ export default function SiteHeader() {
           className={`primary-navigation${menuOpen ? " is-open" : ""}`}
           aria-label="Main navigation"
         >
-          {links.map((link) => (
-            <Link
-              href={link.href}
-              key={link.href}
-              className={isNavLinkActive(link.href) ? "is-active" : undefined}
-              aria-current={isNavLinkActive(link.href) ? "page" : undefined}
-              onClick={() => setMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const isActive = isNavLinkActive(link.href);
+            return (
+              <Link
+                href={link.href}
+                key={link.href}
+                className={isActive ? "is-active" : undefined}
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => setMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
-        <Link
-          href="/registration"
-          className={`button button--small navigation-cta${isLinkActive("/registration") ? " is-active" : ""}`}
-          aria-current={isLinkActive("/registration") ? "page" : undefined}
-          onClick={() => setMenuOpen(false)}
-        >
-          <span>Join the academy</span>
-          <span className="navigation-cta__arrow" aria-hidden="true">
-            →
-          </span>
-        </Link>
+        <div className="site-header__actions">
+          <Link
+            href="/registration"
+            className={`button button--small navigation-cta${isLinkActive("/registration") ? " is-active" : ""}`}
+            aria-current={isLinkActive("/registration") ? "page" : undefined}
+            onClick={() => setMenuOpen(false)}
+          >
+            <span className="navigation-cta__full">Join the academy</span>
+            <span className="navigation-cta__short">Join</span>
+            <span className="navigation-cta__arrow" aria-hidden="true">
+              →
+            </span>
+          </Link>
+        </div>
       </div>
     </header>
   );

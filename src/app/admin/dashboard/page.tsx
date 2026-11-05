@@ -91,6 +91,14 @@ export default async function AdminDashboardPage() {
             </span>
             <span className="admin-dashboard__quick-arrow" aria-hidden="true">→</span>
           </Link>
+          <Link className="admin-dashboard__quick-link" href="/admin/reviews">
+            <span className="admin-dashboard__quick-icon" aria-hidden="true">★</span>
+            <span className="admin-dashboard__quick-copy">
+              <strong>Reviews & ratings</strong>
+              <small>Manage learner feedback and website visibility</small>
+            </span>
+            <span className="admin-dashboard__quick-arrow" aria-hidden="true">→</span>
+          </Link>
         </div>
       </section>
     </div>
